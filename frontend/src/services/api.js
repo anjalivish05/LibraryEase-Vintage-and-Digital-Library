@@ -4,7 +4,7 @@
  * Gracefully handles offline fallback to preserve a seamless user experience.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || '/api';
 const TOKEN_KEY = 'libraryease_auth_token';
 const USER_KEY = 'libraryease_user_profile';
 

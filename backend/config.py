@@ -29,8 +29,12 @@ class Settings:
     )
     
     # Fallback SQLite URL anchored to backend directory to prevent accidental empty databases
-    _DB_FILE = (Path(__file__).resolve().parent / "libraryease.db").as_posix()
-    SQLITE_URL: str = os.getenv("SQLITE_URL", f"sqlite:///{_DB_FILE}")
+    # In Vercel serverless environments, root is read-only, so fallback to /tmp if not explicitly set
+    if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"):
+        _default_sqlite_path = "/tmp/libraryease.db"
+    else:
+        _default_sqlite_path = (Path(__file__).resolve().parent / "libraryease.db").as_posix()
+    SQLITE_URL: str = os.getenv("SQLITE_URL", f"sqlite:///{_default_sqlite_path}")
     
     # Security & JWT Authentication
     _runtime_jwt_secret: str = ""
@@ -76,12 +80,22 @@ class Settings:
         Returns allowed origins for CORS.
         Always includes verified local development origins. Additional production
         origins can be configured via the CORS_ORIGINS or ALLOWED_ORIGINS environment variable.
+        Also automatically trusts Vercel preview and production domains if present.
         Wildcard '*' origins are strictly filtered out to prevent credential exposure.
         """
         origins = [
             "http://localhost:5173",
             "http://127.0.0.1:5173",
         ]
+        
+        # Automatically trust Vercel system domains if set
+        for v_env in ["VERCEL_URL", "VERCEL_PROJECT_PRODUCTION_URL"]:
+            v = os.getenv(v_env, "").strip()
+            if v:
+                cleaned_v = f"https://{v.rstrip('/')}" if not v.startswith("http") else v.rstrip("/")
+                if cleaned_v not in origins:
+                    origins.append(cleaned_v)
+
         extra_origins = os.getenv("CORS_ORIGINS", os.getenv("ALLOWED_ORIGINS", "")).strip()
         if extra_origins:
             for item in extra_origins.split(","):

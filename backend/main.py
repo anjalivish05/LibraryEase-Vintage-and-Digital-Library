@@ -45,6 +45,9 @@ app = FastAPI(
     title="LibraryEase API",
     description="Smart, AI-Powered Public Library Services System",
     version="1.0.0",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json",
     lifespan=lifespan
 )
 
@@ -58,6 +61,22 @@ app.add_middleware(
 )
 
 # ----------------- SYSTEM & INFO ENDPOINTS -----------------
+
+@app.get("/api")
+@app.get("/api/")
+def api_root():
+    return {
+        "status": "online",
+        "service": "LibraryEase API",
+        "version": "1.0.0",
+        "docs": "/api/docs",
+        "health": "/api/health"
+    }
+
+@app.get("/docs", include_in_schema=False)
+def docs_redirect():
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="/api/docs")
 
 @app.get("/api/health")
 def health_check():
