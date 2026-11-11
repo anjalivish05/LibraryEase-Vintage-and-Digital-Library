@@ -1,0 +1,40 @@
+# Python environment and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Secrets and local environment files
+.env
+*.env
+.env.*
+!.env.example
+
+# Local SQLite databases
+*.db
+*.sqlite3
+
+# Test caches & coverage
+.pytest_cache/
+.coverage
+htmlcov/

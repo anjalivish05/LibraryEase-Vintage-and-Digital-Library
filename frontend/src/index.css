@@ -1,0 +1,142 @@
+/* ==========================================================================
+   LibraryEase — Vintage Library + Modern AI Design System
+   Exact Specified Palette:
+   • Antique Cream: #F5EBDD
+   • Parchment: #E7D6B8
+   • Forest Green: #355442
+   • Muted Sage: #9BAF98
+   • Dusty Lavender: #C7B9D8
+   • Ink Charcoal: #302D27
+   • Pure White: #FFFFFF
+   ========================================================================== */
+
+:root {
+  /* Exact Primary Palette */
+  --color-antique-cream: #F5EBDD;
+  --color-parchment: #E7D6B8;
+  --color-parchment-light: #F0E3CB;
+  --color-forest-green: #355442;
+  --color-forest-green-dark: #253D30;
+  --color-forest-green-light: #446953;
+  --color-muted-sage: #9BAF98;
+  --color-muted-sage-light: #EBF1EA;
+  --color-muted-sage-border: #889F85;
+  --color-dusty-lavender: #C7B9D8;
+  --color-dusty-lavender-light: #F4EFF8;
+  --color-dusty-lavender-dark: #58446E;
+  --color-ink-charcoal: #302D27;
+  --color-ink-muted: #625B50;
+  --color-ink-subtle: #877F71;
+  --color-pure-white: #FFFFFF;
+
+  /* Surfaces & Structures */
+  --color-bg-page: #F5EBDD; /* Antique cream main background */
+  --color-bg-surface: #FFFFFF; /* Pure white card surface */
+  --color-bg-cream: #F5EBDD;
+  --color-bg-parchment: #E7D6B8;
+  --color-bg-sage: #EBF1EA;
+  --color-bg-lavender: #F4EFF8;
+
+  --color-text-main: #302D27; /* Ink Charcoal */
+  --color-text-muted: #625B50;
+  --color-text-inverse: #FFFFFF;
+
+  --color-border-card: #E4D4B6;
+  --color-border-parchment: #E7D6B8;
+  --color-border-subtle: #EEE2CF;
+
+  /* Typography */
+  --font-serif: 'Lora', 'Playfair Display', Georgia, serif;
+  --font-display: 'Playfair Display', 'Lora', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Tactile Shadows */
+  --shadow-sm: 0 1px 3px rgba(48, 45, 39, 0.06), 0 1px 2px rgba(48, 45, 39, 0.04);
+  --shadow-card: 0 4px 16px -2px rgba(48, 45, 39, 0.07), 0 2px 5px -1px rgba(48, 45, 39, 0.03);
+  --shadow-hover: 0 12px 28px -4px rgba(48, 45, 39, 0.12), 0 4px 10px -2px rgba(48, 45, 39, 0.05);
+  --shadow-lavender: 0 4px 16px rgba(199, 185, 216, 0.35);
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-full: 9999px;
+
+  --transition-fast: 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-page);
+  color: var(--color-text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  text-align: left;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  color: var(--color-ink-charcoal);
+  line-height: 1.25;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, select, textarea {
+  font-family: inherit;
+}
+
+.container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 0 1rem;
+  }
+}
