@@ -1,0 +1,11 @@
+# robots.txt for LibraryEase — Your Gateway to Knowledge
+# Production URL: https://libraryease-frontend.vercel.app
+
+User-agent: *
+Allow: /
+
+# Exclude backend API routes from direct indexing
+Disallow: /api/
+
+# Canonical Sitemap
+Sitemap: https://libraryease-frontend.vercel.app/sitemap.xml

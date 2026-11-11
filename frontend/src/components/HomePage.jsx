@@ -93,18 +93,18 @@ export default function HomePage({
           <div className="hero-content">
             <div className="hero-crest-badge">
               <span className="crest-leaf">❦</span>
-              <span>Free Public Library Service</span>
+              <span>Public Library Website & Digital System</span>
               <span className="crest-leaf">❦</span>
             </div>
 
             <h1 className="hero-heading">
-              Your Gateway to <span className="highlight-text">Knowledge</span>
+              LibraryEase – Your Gateway to <span className="highlight-text">Knowledge</span>
             </h1>
 
             <p className="hero-subtitle">
               Step into a warm sanctuary of world literature and community learning. 
-              LibraryEase provides free, unrestricted public access to expansive literary archives, 
-              historical collections, neighborhood study sanctuaries, and intelligent modern discovery.
+              LibraryEase is a modern public library management system providing free access to expansive literary archives, 
+              catalog search, neighborhood study sanctuaries, and intelligent digital discovery.
             </p>
 
             {/* Large Search Bar */}
@@ -308,10 +308,10 @@ export default function HomePage({
       <section className="section-services-quad">
         <div className="container">
           <div className="section-header-centered">
-            <span className="section-eyebrow">Public Amenities & Services</span>
+            <span className="section-eyebrow">Public Library Management & Services</span>
             <h2 className="section-heading">Essential Services at LibraryEase</h2>
             <p className="section-subtext">
-              Connecting traditional book preservation with modern public digital services for all residents.
+              Connecting traditional book preservation with modern public digital library services for all residents.
             </p>
           </div>
 

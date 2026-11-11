@@ -80,6 +80,56 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
+  // Dynamic SEO Title & Metadata sync for client-side navigation
+  useEffect(() => {
+    const pageMeta = {
+      home: {
+        title: 'LibraryEase – Your Gateway to Knowledge',
+        desc: 'LibraryEase – Your Gateway to Knowledge. Modern public library management system and digital services offering seamless book discovery, catalog search, AI reading recommendations, and branch navigation.'
+      },
+      explore: {
+        title: 'Explore Books & Catalog | LibraryEase – Public Library Website',
+        desc: 'Browse our complete catalog of books across computer science, literature, history, and fiction with real-time shelf availability.'
+      },
+      libraries: {
+        title: 'Library Branches & Locations | LibraryEase – Public Library System',
+        desc: 'Locate public library branches, view operating hours, and discover local study sanctums across Mumbai with LibraryEase.'
+      },
+      services: {
+        title: 'Digital & Circulation Services | LibraryEase Library Management System',
+        desc: 'Explore comprehensive library services including book lending, digital reserves, study room bookings, and automated loan reminders.'
+      },
+      about: {
+        title: 'About Us | LibraryEase Public Library System',
+        desc: 'Learn about the mission, history, and civic dedication of LibraryEase Central Public Library.'
+      },
+      'ai-assistant': {
+        title: 'AI Library Assistant & Book Recommendations | LibraryEase',
+        desc: 'Ask our smart AI library assistant for book summaries, literary research assistance, and personalized reading recommendations.'
+      },
+      feedback: {
+        title: 'Feedback & Community Requests | LibraryEase',
+        desc: 'Submit your book requests, patron feedback, or suggestions to the LibraryEase librarian team.'
+      },
+      'my-library': {
+        title: 'My Library & Borrowed Books | LibraryEase',
+        desc: 'Manage your active loans, view renewal deadlines, and track your library borrowing history.'
+      },
+      librarian: {
+        title: 'Librarian Management Portal | LibraryEase',
+        desc: 'Librarian administrative dashboard for circulation management, book returns, and community requests.'
+      }
+    };
+
+    const currentMeta = pageMeta[activePage] || pageMeta.home;
+    document.title = currentMeta.title;
+
+    const descTag = document.querySelector('meta[name="description"]');
+    if (descTag) {
+      descTag.setAttribute('content', currentMeta.desc);
+    }
+  }, [activePage]);
+
   // Fetch verified catalog from FastAPI backend
   const fetchCatalog = useCallback(async () => {
     try {
