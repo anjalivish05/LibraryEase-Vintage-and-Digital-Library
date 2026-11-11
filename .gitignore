@@ -37,10 +37,13 @@ venv/
 backend/venv/
 backend/.venv/
 
-# Databases
+# Databases & Backups
 *.db
 *.sqlite3
 backend/*.db
+*.backup
+backend/*.backup
+backend/backups/
 
 # Editor & OS files
 .vscode/*

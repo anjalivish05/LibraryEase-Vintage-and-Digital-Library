@@ -15,18 +15,28 @@ except ImportError:
     pass
 
 class Settings:
-    # MySQL Database Configuration
+    # Optional individual database connection parameters
     DB_USER: str = os.getenv("DB_USER", "root")
     DB_PASSWORD: str = os.getenv("DB_PASSWORD", "")
     DB_HOST: str = os.getenv("DB_HOST", "127.0.0.1")
-    DB_PORT: int = int(os.getenv("DB_PORT", "3307"))  # Default local MySQL port
+    DB_PORT: int = int(os.getenv("DB_PORT", "3307"))
     DB_NAME: str = os.getenv("DB_NAME", "libraryease")
     
-    # Constructed MySQL Database URL or explicit override from environment
-    DATABASE_URL: str = os.getenv(
-        "DATABASE_URL", 
-        f"mysql+pymysql://{os.getenv('DB_USER', 'root')}:{os.getenv('DB_PASSWORD', '')}@{os.getenv('DB_HOST', '127.0.0.1')}:{os.getenv('DB_PORT', '3307')}/{os.getenv('DB_NAME', 'libraryease')}"
-    )
+    # Production / Configured Database URL (Supabase PostgreSQL, remote PostgreSQL, or MySQL)
+    @property
+    def DATABASE_URL(self) -> str:
+        """
+        Loads DATABASE_URL from OS environment.
+        Automatically normalizes legacy 'postgres://' schema to 'postgresql://' for SQLAlchemy 2.0+ compatibility.
+        Returns empty string when unconfigured, allowing database.py to default cleanly to local SQLite.
+        """
+        raw_url = os.getenv("DATABASE_URL", "").strip()
+        if raw_url:
+            # SQLAlchemy 1.4+ / 2.0+ requires postgresql:// instead of postgres://
+            if raw_url.startswith("postgres://"):
+                return raw_url.replace("postgres://", "postgresql://", 1)
+            return raw_url
+        return ""
     
     # Fallback SQLite URL anchored to backend directory to prevent accidental empty databases
     # In Vercel serverless environments, root is read-only, so fallback to /tmp if not explicitly set
