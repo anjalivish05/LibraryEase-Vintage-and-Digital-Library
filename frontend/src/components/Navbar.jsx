@@ -130,27 +130,45 @@ export default function Navbar({
               )}
             </button>
 
+            {/* Librarian Desk Portal Button for Staff */}
+            {currentUser?.role === 'librarian' && (
+              <button
+                type="button"
+                className={`cta-librarian-btn ${activePage === 'librarian' ? 'active' : ''}`}
+                onClick={() => handleNavClick('librarian')}
+                title="Staff Librarian Circulation Desk & Console"
+              >
+                <ShieldCheck size={15} />
+                <span className="librarian-desk-text">Librarian Desk</span>
+              </button>
+            )}
+
             {/* Patron Profile / Sign In Pill */}
             <button
               type="button"
               className={`patron-sign-in-btn ${currentUser ? 'signed-in' : ''}`}
               onClick={onOpenAuth}
-              title={currentUser ? `Account: ${currentUser.full_name}` : 'Sign In or Register Member Card'}
+              title={currentUser ? `Signed in as ${currentUser.full_name} (${currentUser.member_card_no})` : 'Sign In or Register Member Card'}
+              aria-label={currentUser ? `User Account: ${currentUser.full_name}` : 'Sign In'}
             >
               {currentUser ? (
                 <>
+                  <span className="online-indicator-dot" title="Active Member Session" />
                   {currentUser.role === 'librarian' ? (
-                    <ShieldCheck size={14} className="user-icon-badge" />
+                    <ShieldCheck size={15} className="user-icon-badge" />
                   ) : (
-                    <User size={14} className="user-icon-badge" />
+                    <User size={15} className="user-icon-badge" />
                   )}
                   <span className="patron-btn-text">
-                    {currentUser.full_name.split(' ')[0]} ({currentUser.member_card_no})
+                    <span className="patron-display-name">
+                      {currentUser.full_name ? currentUser.full_name.split(' ')[0] : 'Member'}
+                    </span>
+                    <span className="patron-card-tag">{currentUser.member_card_no}</span>
                   </span>
                 </>
               ) : (
                 <>
-                  <LogIn size={14} />
+                  <LogIn size={15} />
                   <span className="patron-btn-text">Patron Sign In</span>
                 </>
               )}
@@ -199,6 +217,17 @@ export default function Navbar({
                   <User size={17} />
                   <span>My Library Dashboard ({borrowedCount} Borrowed)</span>
                 </button>
+
+                {currentUser?.role === 'librarian' && (
+                  <button
+                    type="button"
+                    className="mobile-drawer-btn librarian-btn"
+                    onClick={() => handleNavClick('librarian')}
+                  >
+                    <ShieldCheck size={17} />
+                    <span>Librarian Desk Console</span>
+                  </button>
+                )}
 
                 <div className="mobile-aux-actions">
                   <button

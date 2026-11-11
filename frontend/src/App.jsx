@@ -12,6 +12,8 @@ import FeedbackPage from './components/FeedbackPage';
 import BookModal from './components/BookModal';
 import AuthModal from './components/AuthModal';
 import NotificationDrawer from './components/NotificationDrawer';
+import LibrarianDashboard from './components/LibrarianDashboard';
+import RequestBookModal from './components/RequestBookModal';
 
 import { SAMPLE_BOOKS } from './data/booksData';
 import { INITIAL_BORROWED_BOOKS } from './data/myLibraryData';
@@ -59,6 +61,7 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState(api.getStoredUser());
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isNotifDrawerOpen, setIsNotifDrawerOpen] = useState(false);
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
   const [notifications, setNotifications] = useState(DEMO_NOTIFICATIONS);
   const [isRefreshingNotifs, setIsRefreshingNotifs] = useState(false);
 
@@ -66,7 +69,7 @@ export default function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '').trim();
-      const validPages = ['home', 'explore', 'libraries', 'services', 'about', 'my-library', 'ai-assistant', 'feedback'];
+      const validPages = ['home', 'explore', 'libraries', 'services', 'about', 'my-library', 'ai-assistant', 'feedback', 'librarian'];
       if (validPages.includes(hash)) {
         setActivePage(hash);
       }
@@ -315,38 +318,71 @@ export default function App() {
     }
   };
 
-  // Renew Loan
-  const handleRenewLoan = (loanId) => {
-    let result = { success: false };
+  // Renew Loan with live backend API integration & validation
+  const handleRenewLoan = async (loanId) => {
+    const loan = borrowedBooks.find((b) => b.id === loanId);
+    const recordId = loan?.recordId || (typeof loanId === 'string' && loanId.startsWith('loan-') ? parseInt(loanId.replace('loan-', ''), 10) : (typeof loanId === 'number' ? loanId : null));
 
-    setBorrowedBooks((prevLoans) =>
-      prevLoans.map((loan) => {
-        if (loan.id === loanId) {
-          if (loan.renewalsRemaining > 0) {
-            const currentDue = new Date(loan.dueDate);
-            currentDue.setDate(currentDue.getDate() + 14);
-            const newDueDateStr = currentDue.toISOString().split('T')[0];
+    if (currentUser && recordId && !isNaN(recordId)) {
+      try {
+        const res = await api.borrowings.renew(recordId);
+        await refreshUserBorrowings();
+        showToast(`Success: "${loan?.title || 'Book'}" renewed until ${res.due_date}. (${res.renewals_remaining} renewal(s) remaining)`);
+        return {
+          success: true,
+          newDueDate: res.due_date,
+          remaining: res.renewals_remaining
+        };
+      } catch (err) {
+        console.error('Renewal API error:', err);
+        const errorMsg = err.message || 'Unable to renew book loan.';
+        showToast(errorMsg);
+        return {
+          success: false,
+          message: errorMsg
+        };
+      }
+    } else {
+      // Local demo fallback for guest/unpersisted loans
+      let result = { success: false, message: 'Please sign in to renew online loans.' };
+      setBorrowedBooks((prevLoans) =>
+        prevLoans.map((l) => {
+          if (l.id === loanId) {
+            if (l.renewalsRemaining > 0 && l.daysLeft >= 0) {
+              const currentDue = new Date(l.dueDate);
+              currentDue.setDate(currentDue.getDate() + 14);
+              const newDueDateStr = currentDue.toISOString().split('T')[0];
 
-            result = {
-              success: true,
-              newDueDate: newDueDateStr,
-              remaining: loan.renewalsRemaining - 1
-            };
+              result = {
+                success: true,
+                newDueDate: newDueDateStr,
+                remaining: l.renewalsRemaining - 1
+              };
 
-            return {
-              ...loan,
-              dueDate: newDueDateStr,
-              daysLeft: loan.daysLeft + 14,
-              renewalsRemaining: loan.renewalsRemaining - 1,
-              status: `Renewed — Due in ${loan.daysLeft + 14} days`
-            };
+              return {
+                ...l,
+                dueDate: newDueDateStr,
+                daysLeft: l.daysLeft + 14,
+                renewalsRemaining: l.renewalsRemaining - 1,
+                status: `Renewed — Due in ${l.daysLeft + 14} days`
+              };
+            } else {
+              result = {
+                success: false,
+                message: l.daysLeft < 0 ? 'Overdue items cannot be renewed online.' : 'Maximum renewals reached (2/2).'
+              };
+            }
           }
-        }
-        return loan;
-      })
-    );
-
-    return result;
+          return l;
+        })
+      );
+      if (result.success) {
+        showToast(`Success: "${loan?.title || 'Book'}" renewed until ${result.newDueDate}.`);
+      } else {
+        showToast(result.message);
+      }
+      return result;
+    }
   };
 
   // Return Loan with database persistence
@@ -439,6 +475,7 @@ export default function App() {
             onRenewLoan={handleRenewLoan}
             onReturnLoan={handleReturnLoan}
             onNavigateToExplore={() => handleNavigate('explore')}
+            onShowToast={showToast}
           />
         )}
 
@@ -456,6 +493,7 @@ export default function App() {
             onNavigateToExplore={() => handleNavigate('explore')}
             onNavigateToAssistant={() => handleNavigate('ai-assistant')}
             onShowToast={showToast}
+            onRequestBook={() => setIsRequestModalOpen(true)}
           />
         )}
 
@@ -471,7 +509,28 @@ export default function App() {
             currentUser={currentUser}
           />
         )}
+
+        {activePage === 'librarian' && (
+          <LibrarianDashboard
+            currentUser={currentUser}
+            onOpenAuth={() => setIsAuthModalOpen(true)}
+            onShowToast={showToast}
+            onNavigate={handleNavigate}
+            onCatalogChanged={fetchCatalog}
+          />
+        )}
       </main>
+
+      {/* Request a Book Modal */}
+      <RequestBookModal
+        isOpen={isRequestModalOpen}
+        onClose={() => setIsRequestModalOpen(false)}
+        currentUser={currentUser}
+        onShowToast={showToast}
+        onSuccess={() => {
+          // If on my-library, it will refresh or user can view it
+        }}
+      />
 
       {/* Book Details Modal */}
       {selectedBookForModal && (

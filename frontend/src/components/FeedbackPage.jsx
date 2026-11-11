@@ -202,7 +202,7 @@ export default function FeedbackPage({ currentUser }) {
                       <input
                         id="fb-name"
                         type="text"
-                        placeholder="e.g. Eleanor Vance"
+                        placeholder="e.g. Anjali Vishwakarma"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         className={`fb-input ${errors.name ? 'input-error' : ''}`}
@@ -227,7 +227,7 @@ export default function FeedbackPage({ currentUser }) {
                       <input
                         id="fb-email"
                         type="email"
-                        placeholder="eleanor@example.org"
+                        placeholder="anjali@example.org"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className={`fb-input ${errors.email ? 'input-error' : ''}`}

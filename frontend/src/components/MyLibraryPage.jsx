@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   User, 
   Calendar, 
@@ -11,35 +11,91 @@ import {
   BookOpen, 
   Barcode, 
   Info,
-  Check
+  Check,
+  BookPlus,
+  FileText,
+  Loader2,
+  ShieldCheck
 } from 'lucide-react';
 import { DEMO_USER, INITIAL_BORROWED_BOOKS, DEMO_HOLDS, DEMO_HISTORY } from '../data/myLibraryData';
+import { api } from '../services/api';
+import RequestBookModal from './RequestBookModal';
 
 export default function MyLibraryPage({ 
   borrowedBooks = [], 
   currentUser = null,
   onRenewLoan, 
   onReturnLoan, 
-  onNavigateToExplore 
+  onNavigateToExplore,
+  onShowToast,
+  initialTab = 'loans'
 }) {
-  const [activeTab, setActiveTab] = useState('loans');
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [renewalNotice, setRenewalNotice] = useState(null);
+  const [isRenewingId, setIsRenewingId] = useState(null);
+
+  // Book Requests state
+  const [bookRequests, setBookRequests] = useState([]);
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+  const [isLoadingRequests, setIsLoadingRequests] = useState(false);
 
   const patronName = currentUser ? currentUser.full_name : DEMO_USER.name;
   const patronCardNo = currentUser ? currentUser.member_card_no : DEMO_USER.cardNumber;
   const patronBranch = DEMO_USER.homeBranch;
 
-  const handleRenew = (loanId, title) => {
-    const result = onRenewLoan(loanId);
-    if (result && result.success) {
-      setRenewalNotice(`Success: "${title}" has been renewed until ${result.newDueDate}. (${result.remaining} renewals remaining)`);
+  // Fetch patron's book requests
+  const loadUserRequests = async () => {
+    if (currentUser) {
+      setIsLoadingRequests(true);
+      try {
+        const reqs = await api.bookRequests.getMy();
+        if (Array.isArray(reqs)) {
+          setBookRequests(reqs);
+        }
+      } catch (err) {
+        console.warn('Error loading user book requests:', err);
+      } finally {
+        setIsLoadingRequests(false);
+      }
     } else {
-      setRenewalNotice(`Notice: "${title}" cannot be renewed further (maximum renewals reached).`);
+      // Demo request for guest mode
+      setBookRequests([
+        {
+          id: 1,
+          book_title: 'The Palace of Illusions',
+          author: 'Chitra Banerjee Divakaruni',
+          category: 'Indian Literature',
+          reason: 'Feminist retelling of the Mahabharata from Panchaali’s perspective.',
+          status: 'approved',
+          librarian_response: 'Acquired and placed on Shelf F-12 at David Sassoon Library.',
+          created_at: new Date(Date.now() - 86400000 * 5).toISOString()
+        }
+      ]);
     }
+  };
 
-    setTimeout(() => {
-      setRenewalNotice(null);
-    }, 4500);
+  useEffect(() => {
+    loadUserRequests();
+  }, [currentUser]);
+
+  // Handle Book Renewal with database sync
+  const handleRenew = async (loanId, title) => {
+    setIsRenewingId(loanId);
+    try {
+      const result = await onRenewLoan(loanId);
+      if (result && result.success) {
+        setRenewalNotice(`Success: "${title}" has been renewed until ${result.newDueDate}. (${result.remaining} renewals remaining)`);
+      } else {
+        setRenewalNotice(`Notice: "${title}" — ${result?.message || 'Cannot renew loan.'}`);
+      }
+    } catch (e) {
+      setRenewalNotice(`Notice: "${title}" renewal failed: ${e.message}`);
+    } finally {
+      setIsRenewingId(null);
+      setTimeout(() => {
+        setRenewalNotice(null);
+      }, 5500);
+    }
   };
 
   const handleReturn = (loanId, title) => {
@@ -58,11 +114,11 @@ export default function MyLibraryPage({
       {/* Header Band */}
       <section className="page-header-band">
         <div className="container">
-          <span className="page-breadcrumb">Patron Portal &gt; Borrowing Dashboard & Reminders</span>
-          <h1 className="page-title">Borrowing Dashboard & Reminders</h1>
+          <span className="page-breadcrumb">Patron Portal &gt; Borrowing Dashboard & Requests</span>
+          <h1 className="page-title">Borrowing Dashboard & Circulation Records</h1>
           <p className="page-description">
-            Monitor your active loans, review upcoming due dates, request renewal extensions, 
-            and manage reserve holds across all 6 municipal branches.
+            Monitor active loans, request 14-day renewal extensions, track reserve holds, 
+            and submit acquisition recommendations for books not currently in our stacks.
           </p>
         </div>
       </section>
@@ -81,7 +137,7 @@ export default function MyLibraryPage({
               {currentUser ? (
                 <>
                   Viewing digital library card records for <strong>{currentUser.full_name}</strong> (#{currentUser.member_card_no}). 
-                  Borrowings and automated return reminder notifications are synchronized with your account.
+                  Borrowings, renewals, and automated return reminders are synchronized with your account.
                 </>
               ) : (
                 <>
@@ -103,7 +159,7 @@ export default function MyLibraryPage({
 
         {/* Top Ledger: Virtual Library Card & Circulation Metrics */}
         <div className="dashboard-top-grid">
-          {/* Virtual Library Card (Vintage Forest Green #355442 & Parchment) */}
+          {/* Virtual Library Card */}
           <div className="patron-vintage-card">
             <div className="card-top-row">
               <div className="card-brand-group">
@@ -132,7 +188,7 @@ export default function MyLibraryPage({
             </div>
           </div>
 
-          {/* Circulation Status & Return Alerts (Uses Muted Sage & Restrained Warning) */}
+          {/* Circulation Status & Return Alerts */}
           <div className="circulation-summary-card">
             <h3 className="circulation-title">Circulation Status & Due Dates</h3>
 
@@ -140,6 +196,10 @@ export default function MyLibraryPage({
               <div className="circ-stat-box">
                 <span className="circ-stat-val">{borrowedBooks.length}</span>
                 <span className="circ-stat-lbl">Active Loans</span>
+              </div>
+              <div className="circ-stat-box" onClick={() => setActiveTab('requests')} style={{ cursor: 'pointer' }}>
+                <span className="circ-stat-val">{bookRequests.length}</span>
+                <span className="circ-stat-lbl">Book Requests</span>
               </div>
               <div className="circ-stat-box">
                 <span className="circ-stat-val">{DEMO_HOLDS.length}</span>
@@ -161,7 +221,7 @@ export default function MyLibraryPage({
                 {overdueCount > 0 ? (
                   <>
                     <strong>Action Required:</strong> You have <strong>{overdueCount} overdue item(s)</strong>. 
-                    Please return to any branch return dropbox immediately or contact the circulation desk.
+                    Overdue books cannot be renewed online. Please return them to any branch desk or 24/7 return box.
                   </>
                 ) : dueSoonCount > 0 ? (
                   <>
@@ -189,6 +249,13 @@ export default function MyLibraryPage({
           </button>
           <button
             type="button"
+            className={`dash-tab-btn ${activeTab === 'requests' ? 'active' : ''}`}
+            onClick={() => setActiveTab('requests')}
+          >
+            <span>Book Requests ({bookRequests.length})</span>
+          </button>
+          <button
+            type="button"
             className={`dash-tab-btn ${activeTab === 'holds' ? 'active' : ''}`}
             onClick={() => setActiveTab('holds')}
           >
@@ -203,7 +270,7 @@ export default function MyLibraryPage({
           </button>
         </div>
 
-        {/* Tab 1: Active Loans List */}
+        {/* TAB 1: ACTIVE LOANS WITH BOOK RENEWAL WORKFLOW */}
         {activeTab === 'loans' && (
           <div className="tab-loans-view">
             {borrowedBooks.length > 0 ? (
@@ -211,6 +278,8 @@ export default function MyLibraryPage({
                 {borrowedBooks.map((loan) => {
                   const isOverdue = loan.daysLeft < 0 || loan.status?.includes('overdue');
                   const isDueSoon = loan.daysLeft >= 0 && loan.daysLeft <= 3;
+                  const remainingRenews = loan.renewalsRemaining !== undefined ? loan.renewalsRemaining : 2;
+                  const isRenewable = !isOverdue && remainingRenews > 0;
 
                   return (
                     <div key={loan.id} className="loan-card-item">
@@ -232,7 +301,7 @@ export default function MyLibraryPage({
                           <span className="date-txt">{loan.borrowDate}</span>
                         </div>
                         <div className="date-block">
-                          <span className="date-lbl">Due Date</span>
+                          <span className="date-lbl">Current Due Date</span>
                           <span className={`date-txt-due ${isOverdue ? 'due-overdue' : isDueSoon ? 'due-urgent' : ''}`}>
                             {loan.dueDate}
                           </span>
@@ -251,11 +320,21 @@ export default function MyLibraryPage({
                           type="button"
                           className="btn-renew-loan"
                           onClick={() => handleRenew(loan.id, loan.title)}
-                          disabled={loan.renewalsRemaining <= 0 || isOverdue}
-                          title={loan.renewalsRemaining > 0 && !isOverdue ? "Renew loan for 14 days" : "Cannot renew"}
+                          disabled={isRenewingId === loan.id || !isRenewable}
+                          title={
+                            isOverdue
+                              ? "Cannot renew: overdue items must be returned to a branch desk"
+                              : remainingRenews <= 0
+                              ? "Cannot renew: maximum 2 renewals reached"
+                              : "Renew loan for 14 days"
+                          }
                         >
-                          <RotateCcw size={14} />
-                          <span>Renew ({loan.renewalsRemaining || 0} left)</span>
+                          <RotateCcw size={14} className={isRenewingId === loan.id ? 'spin-icon' : ''} />
+                          <span>
+                            {isRenewingId === loan.id 
+                              ? 'Renewing...' 
+                              : `Renew (${remainingRenews} left)`}
+                          </span>
                         </button>
                         <button
                           type="button"
@@ -266,6 +345,17 @@ export default function MyLibraryPage({
                           <Check size={14} />
                           <span>Return Book</span>
                         </button>
+
+                        {/* Eligibility & Renewal Limit Note */}
+                        <div className="loan-eligibility-note">
+                          {isOverdue ? (
+                            <span className="eligibility-tag tag-overdue">Ineligible: Overdue book cannot be renewed online</span>
+                          ) : remainingRenews <= 0 ? (
+                            <span className="eligibility-tag tag-maxed">Ineligible: Max renewals reached (2/2)</span>
+                          ) : (
+                            <span className="eligibility-tag tag-eligible">Eligible: {remainingRenews} renewal(s) remaining (+14 days)</span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
@@ -290,21 +380,103 @@ export default function MyLibraryPage({
           </div>
         )}
 
-        {/* Tab 2: Holds */}
+        {/* TAB 2: REQUEST A BOOK & PREVIOUS REQUESTS */}
+        {activeTab === 'requests' && (
+          <div className="tab-requests-view">
+            <div className="requests-tab-header">
+              <div>
+                <h3 className="tab-pane-title">Acquisition & Inter-Library Book Requests</h3>
+                <p className="tab-pane-sub">
+                  Cannot find a volume in our stacks? Suggest it for municipal procurement or inter-library loan.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="btn-parchment-primary"
+                onClick={() => setIsRequestModalOpen(true)}
+              >
+                <BookPlus size={15} />
+                <span>Request a Book</span>
+              </button>
+            </div>
+
+            {isLoadingRequests ? (
+              <div className="dashboard-loading-state">
+                <Loader2 size={32} className="spin-icon" />
+                <p>Loading your book requests...</p>
+              </div>
+            ) : bookRequests.length > 0 ? (
+              <div className="requests-history-grid">
+                {bookRequests.map((req) => (
+                  <div key={req.id} className="patron-request-card">
+                    <div className="req-card-top">
+                      <div>
+                        <span className="req-id-badge">REQ-{String(req.id).padStart(5, '0')}</span>
+                        <h4 className="req-title">{req.book_title}</h4>
+                        <p className="req-author">by {req.author} • {req.category || 'General'}</p>
+                      </div>
+                      <span className={`status-pill status-${req.status}`}>
+                        {req.status.toUpperCase()}
+                      </span>
+                    </div>
+
+                    <div className="req-reason-text">
+                      <strong>Your Stated Reason:</strong> "{req.reason}"
+                    </div>
+
+                    {req.librarian_response && (
+                      <div className="req-librarian-reply">
+                        <ShieldCheck size={16} className="reply-icon" />
+                        <div>
+                          <strong>Librarian Disposition Note:</strong>
+                          <p>{req.librarian_response}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="req-date-footer">
+                      <span>Submitted on {new Date(req.created_at).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="empty-catalog-state">
+                <FileText size={36} className="empty-icon" />
+                <h3 className="empty-title">No Book Requests Submitted Yet</h3>
+                <p className="empty-desc">
+                  Looking for a rare historical monograph, college textbook, or entrance exam guide? 
+                  Recommend a title to our acquisition team.
+                </p>
+                <button
+                  type="button"
+                  className="empty-reset-btn"
+                  onClick={() => setIsRequestModalOpen(true)}
+                >
+                  Submit First Book Request
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 3: RESERVED HOLDS */}
         {activeTab === 'holds' && (
           <div className="tab-holds-view">
             <div className="holds-list">
               {DEMO_HOLDS.map((hold) => (
                 <div key={hold.id} className="hold-card-item">
-                  <div className="hold-info">
-                    <span className="hold-badge">Queue Position #{hold.queuePosition}</span>
-                    <h4 className="hold-title">{hold.title}</h4>
-                    <p className="hold-author">by {hold.author} • {hold.format}</p>
-                    <p className="hold-branch">Pickup Destination: {hold.pickupBranch}</p>
+                  <div className="hold-info-group">
+                    <Bookmark size={20} className="hold-icon" />
+                    <div>
+                      <h4 className="hold-title">{hold.title}</h4>
+                      <p className="hold-author">by {hold.author}</p>
+                      <p className="hold-pickup">Pickup Desk: {hold.pickupBranch}</p>
+                    </div>
                   </div>
-                  <div className="hold-eta">
-                    <span className="eta-lbl">Estimated Ready Date</span>
-                    <span className="eta-date">{hold.estimatedPickupDate}</span>
+                  <div className="hold-status-group">
+                    <span className="hold-queue-badge">Queue Position: #{hold.queuePosition}</span>
+                    <span className="hold-eta">Estimated: {hold.estimatedAvailable}</span>
                   </div>
                 </div>
               ))}
@@ -312,26 +484,49 @@ export default function MyLibraryPage({
           </div>
         )}
 
-        {/* Tab 3: Reading History */}
+        {/* TAB 4: READING HISTORY */}
         {activeTab === 'history' && (
           <div className="tab-history-view">
-            <div className="history-ledger-card">
-              {DEMO_HISTORY.map((item, idx) => (
-                <div key={idx} className="history-item-row">
-                  <div>
-                    <h4 className="history-title">{item.title}</h4>
-                    <p className="history-author">by {item.author}</p>
-                  </div>
-                  <div className="history-meta">
-                    <span className="history-date">Returned: {item.returnedDate}</span>
-                    <span className="history-rating">★ {item.ratingGiven}/5 patron rating</span>
-                  </div>
-                </div>
-              ))}
+            <div className="history-table-card">
+              <table className="history-table">
+                <thead>
+                  <tr>
+                    <th>Title & Author</th>
+                    <th>Date Borrowed</th>
+                    <th>Date Returned</th>
+                    <th>Branch</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {DEMO_HISTORY.map((item) => (
+                    <tr key={item.id}>
+                      <td>
+                        <strong>{item.title}</strong>
+                        <span className="table-author-sub">by {item.author}</span>
+                      </td>
+                      <td>{item.borrowDate}</td>
+                      <td>{item.returnDate}</td>
+                      <td>{item.branch}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
       </div>
+
+      {/* REQUEST A BOOK MODAL */}
+      <RequestBookModal
+        isOpen={isRequestModalOpen}
+        onClose={() => setIsRequestModalOpen(false)}
+        currentUser={currentUser}
+        onShowToast={onShowToast}
+        onSuccess={() => {
+          loadUserRequests();
+          setActiveTab('requests');
+        }}
+      />
     </div>
   );
 }

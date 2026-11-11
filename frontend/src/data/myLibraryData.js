@@ -1,5 +1,5 @@
 export const DEMO_USER = {
-  name: 'Eleanor Vance',
+  name: 'Anjali Vishwakarma',
   cardNumber: 'LIB-2026-8841',
   memberSince: 'October 2021',
   homeBranch: 'David Sassoon Library, Fort',

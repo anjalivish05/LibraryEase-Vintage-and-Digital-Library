@@ -453,7 +453,7 @@ class TestLibraryEaseBackend(unittest.TestCase):
             "reason": "Crucial reading for Indian Ocean colonial history research study."
         }
         sub_res = self.client.post("/api/book-requests", json=req_payload, headers=patron_headers)
-        self.assertEqual(sub_res.status_code, 200)
+        self.assertIn(sub_res.status_code, [200, 201])
         req_data = sub_res.json()
         req_id = req_data["id"]
         self.assertEqual(req_data["book_title"], "The Glass Palace")

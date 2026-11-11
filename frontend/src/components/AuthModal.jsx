@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   User, 
   Lock, 
@@ -11,7 +11,9 @@ import {
   AlertCircle, 
   LogOut,
   Sparkles,
-  Barcode
+  Barcode,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { api } from '../services/api';
 
@@ -27,6 +29,10 @@ export default function AuthModal({
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Password visibility states
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegPassword, setShowRegPassword] = useState(false);
+
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
@@ -36,6 +42,16 @@ export default function AuthModal({
   const [regEmail, setRegEmail] = useState('');
   const [regPhone, setRegPhone] = useState('');
   const [regPassword, setRegPassword] = useState('');
+
+  // Synchronize active tab whenever modal opens or user auth status changes
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab(currentUser ? 'account' : 'login');
+      resetMessages();
+      setShowLoginPassword(false);
+      setShowRegPassword(false);
+    }
+  }, [isOpen, currentUser]);
 
   if (!isOpen) return null;
 
@@ -196,28 +212,30 @@ export default function AuthModal({
         {/* Tab 1: Login */}
         {!currentUser && activeTab === 'login' && (
           <form onSubmit={handleLoginSubmit} className="auth-form-body">
-            {/* Quick Demo Fill Shortcut Box */}
-            <div className="auth-quick-fill-box">
-              <span className="quick-fill-label">Instant Demo Credentials:</span>
-              <div className="quick-fill-btns">
-                <button
-                  type="button"
-                  className="quick-fill-btn patron"
-                  onClick={() => handleQuickFill('patron@libraryease.org', 'patron123')}
-                >
-                  <User size={13} />
-                  <span>Patron (Alex Morgan)</span>
-                </button>
-                <button
-                  type="button"
-                  className="quick-fill-btn librarian"
-                  onClick={() => handleQuickFill('librarian@libraryease.org', 'admin123')}
-                >
-                  <ShieldCheck size={13} />
-                  <span>Librarian (Eleanor)</span>
-                </button>
+            {/* Quick Demo Fill Shortcut Box (Development Only) */}
+            {import.meta.env.DEV && (
+              <div className="auth-quick-fill-box">
+                <span className="quick-fill-label">Instant Demo Credentials (Dev Mode Only):</span>
+                <div className="quick-fill-btns">
+                  <button
+                    type="button"
+                    className="quick-fill-btn patron"
+                    onClick={() => handleQuickFill('patron@libraryease.org', 'patron123')}
+                  >
+                    <User size={13} />
+                    <span>Patron (Anjali)</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="quick-fill-btn librarian"
+                    onClick={() => handleQuickFill('librarian@libraryease.org', 'admin123')}
+                  >
+                    <ShieldCheck size={13} />
+                    <span>Librarian</span>
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="auth-field-group">
               <label htmlFor="auth-email">Library Email Address</label>
@@ -240,12 +258,22 @@ export default function AuthModal({
                 <Lock size={16} className="auth-field-icon" />
                 <input
                   id="auth-password"
-                  type="password"
+                  type={showLoginPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
+                  className="auth-input-with-toggle"
                   required
                 />
+                <button
+                  type="button"
+                  className="auth-password-toggle-btn"
+                  onClick={() => setShowLoginPassword((prev) => !prev)}
+                  title={showLoginPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showLoginPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showLoginPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
             </div>
 
@@ -276,6 +304,29 @@ export default function AuthModal({
         {/* Tab 2: Register */}
         {!currentUser && activeTab === 'register' && (
           <form onSubmit={handleRegisterSubmit} className="auth-form-body">
+            {/* Quick Demo Registration (Development Only) */}
+            {import.meta.env.DEV && (
+              <div className="auth-quick-fill-box">
+                <span className="quick-fill-label">Instant Demo Registration (Dev Mode Only):</span>
+                <div className="quick-fill-btns">
+                  <button
+                    type="button"
+                    className="quick-fill-btn patron"
+                    onClick={() => {
+                      setRegFullName('Anjali Vishwakarma');
+                      setRegEmail(`anjali.${Date.now().toString().slice(-4)}@libraryease.org`);
+                      setRegPhone('+91 (022) 2284-3703');
+                      setRegPassword('anjali123');
+                      resetMessages();
+                    }}
+                  >
+                    <User size={13} />
+                    <span>Fill Demo Registration (Anjali)</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div className="auth-field-group">
               <label htmlFor="reg-fullname">Full Patron Name</label>
               <div className="auth-input-wrapper">
@@ -283,7 +334,7 @@ export default function AuthModal({
                 <input
                   id="reg-fullname"
                   type="text"
-                  placeholder="e.g. Clara Oswald"
+                  placeholder="e.g. Anjali Vishwakarma"
                   value={regFullName}
                   onChange={(e) => setRegFullName(e.target.value)}
                   required
@@ -298,7 +349,7 @@ export default function AuthModal({
                 <input
                   id="reg-email"
                   type="email"
-                  placeholder="clara@example.org"
+                  placeholder="anjali@example.org"
                   value={regEmail}
                   onChange={(e) => setRegEmail(e.target.value)}
                   required
@@ -313,7 +364,7 @@ export default function AuthModal({
                 <input
                   id="reg-phone"
                   type="tel"
-                  placeholder="+1 (555) 019-2834"
+                  placeholder="+91 98765 43210"
                   value={regPhone}
                   onChange={(e) => setRegPhone(e.target.value)}
                 />
@@ -326,12 +377,22 @@ export default function AuthModal({
                 <Lock size={16} className="auth-field-icon" />
                 <input
                   id="reg-password"
-                  type="password"
+                  type={showRegPassword ? 'text' : 'password'}
                   placeholder="At least 6 characters"
                   value={regPassword}
                   onChange={(e) => setRegPassword(e.target.value)}
+                  className="auth-input-with-toggle"
                   required
                 />
+                <button
+                  type="button"
+                  className="auth-password-toggle-btn"
+                  onClick={() => setShowRegPassword((prev) => !prev)}
+                  title={showRegPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showRegPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showRegPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
             </div>
 

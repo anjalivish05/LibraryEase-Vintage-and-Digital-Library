@@ -240,9 +240,10 @@ class FeedbackResponse(BaseModel):
         from_attributes = True
 
 class BookRequestCreate(BaseModel):
-    user_name: str
-    user_email: EmailStr
-    book_title: str
+    user_name: Optional[str] = None
+    user_email: Optional[EmailStr] = None
+    book_title: Optional[str] = None
+    title: Optional[str] = None
     author: str
     category: Optional[str] = None
     reason: Optional[str] = None
@@ -250,6 +251,7 @@ class BookRequestCreate(BaseModel):
 class BookRequestUpdateStatus(BaseModel):
     status: str  # "pending", "approved", "acquired", "rejected"
     librarian_response: Optional[str] = None
+    librarian_notes: Optional[str] = None
 
 class BookRequestResponse(BaseModel):
     id: int

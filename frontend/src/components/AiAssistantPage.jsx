@@ -14,10 +14,24 @@ import {
   ExternalLink,
   ChevronRight,
   ShieldCheck,
-  Cpu
+  Cpu,
+  Brain,
+  Zap,
+  Smile,
+  GraduationCap,
+  Compass
 } from 'lucide-react';
 import { MOOD_OPTIONS, CATEGORIES } from '../data/booksData';
 import { api } from '../services/api';
+
+const MOOD_ICON_MAP = {
+  Brain,
+  Zap,
+  Smile,
+  GraduationCap,
+  Compass,
+  BookOpen
+};
 
 export default function AiAssistantPage({ 
   books = [], 
@@ -110,7 +124,10 @@ export default function AiAssistantPage({
 
       // Mood match
       if (selectedMood && book.moods) {
-        if (book.moods.some((m) => m.toLowerCase().includes(selectedMood.toLowerCase()))) {
+        if (book.moods.some((m) => 
+          m.toLowerCase().includes(selectedMood.toLowerCase()) || 
+          selectedMood.toLowerCase().includes(m.toLowerCase())
+        )) {
           score += 30;
           reasons.push(`Matches atmosphere: "${selectedMood}"`);
         }
@@ -372,17 +389,28 @@ export default function AiAssistantPage({
 
               {/* Mood Pills (Horizontally scrollable) */}
               <div className="tuning-mood-pills">
-                {MOOD_OPTIONS.slice(0, 4).map((mood, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    className={`tuning-mood-pill ${selectedMood === mood ? 'active' : ''}`}
-                    onClick={() => setSelectedMood(selectedMood === mood ? '' : mood)}
-                  >
-                    {selectedMood === mood && <Check size={11} />}
-                    <span>{mood}</span>
-                  </button>
-                ))}
+                {MOOD_OPTIONS.slice(0, 4).map((mood) => {
+                  const IconComponent = MOOD_ICON_MAP[mood.icon];
+                  const isSelected = selectedMood === mood.label;
+
+                  return (
+                    <button
+                      key={mood.id}
+                      type="button"
+                      className={`tuning-mood-pill ${isSelected ? 'active' : ''}`}
+                      onClick={() => setSelectedMood(isSelected ? '' : mood.label)}
+                      title={mood.label}
+                      aria-pressed={isSelected}
+                    >
+                      {isSelected ? (
+                        <Check size={11} className="mood-pill-check-icon" />
+                      ) : (
+                        IconComponent && <IconComponent size={12} className="mood-pill-icon" />
+                      )}
+                      <span>{mood.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>

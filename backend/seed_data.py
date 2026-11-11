@@ -17,7 +17,7 @@ def seed_users_and_catalog(db: Session):
     # 1. Create Users
     librarian = models.User(
         email="librarian@libraryease.org",
-        full_name="Eleanor Vance (Head Librarian)",
+        full_name="Librarian",
         hashed_password=hash_password("admin123"),
         role="librarian",
         phone="+1 (555) 234-5678",
@@ -25,7 +25,7 @@ def seed_users_and_catalog(db: Session):
     )
     patron1 = models.User(
         email="patron@libraryease.org",
-        full_name="Alex Morgan",
+        full_name="Anjali Vishwakarma",
         hashed_password=hash_password("patron123"),
         role="user",
         phone="+1 (555) 345-6789",
@@ -412,7 +412,7 @@ def seed_users_and_catalog(db: Session):
         return_date=today - timedelta(days=17),
         status="returned",
         notes="Returned in excellent condition.",
-        librarian_notes="Verified by Eleanor Vance at front desk."
+        librarian_notes="Verified by Librarian at front desk."
     )
 
     rec_returned2 = models.BorrowingRecord(
@@ -466,13 +466,13 @@ def seed_users_and_catalog(db: Session):
     feedbacks = [
         models.Feedback(
             user_id=patron1.id,
-            user_name="Alex Morgan",
+            user_name="Anjali Vishwakarma",
             user_email="patron@libraryease.org",
             rating=5,
             category="Website Experience",
             comments="The AI book discovery feature helped me find the right beginner Python book immediately! Much easier than our old library catalog.",
             status="resolved",
-            admin_response="Thank you Alex! We are thrilled to hear that the AI search is making your research easier.",
+            admin_response="Thank you Anjali! We are thrilled to hear that the AI search is making your research easier.",
             response_date=datetime.utcnow() - timedelta(days=2)
         ),
         models.Feedback(
@@ -492,7 +492,7 @@ def seed_users_and_catalog(db: Session):
             user_email="david.miller@example.com",
             rating=5,
             category="Staff Support",
-            comments="Librarian Eleanor was extremely helpful in recommending great history books for my high school research project.",
+            comments="The Librarian was extremely helpful in recommending great history books for my high school research project.",
             status="resolved",
             admin_response="We appreciate your kind words, David! Our staff is always here to assist your learning journey.",
             response_date=datetime.utcnow() - timedelta(days=1)
@@ -515,7 +515,7 @@ def seed_users_and_catalog(db: Session):
         ),
         models.BookRequest(
             user_id=patron1.id,
-            user_name="Alex Morgan",
+            user_name="Anjali Vishwakarma",
             user_email="patron@libraryease.org",
             book_title="Grokking Algorithms",
             author="Aditya Bhargava",

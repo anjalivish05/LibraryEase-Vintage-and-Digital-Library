@@ -48,13 +48,10 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Enable CORS for React frontend
+# Enable CORS for React frontend (Configurable & Development-friendly)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -1401,19 +1398,30 @@ def update_feedback_status(
 
 # ----------------- BOOK REQUESTS ENDPOINTS -----------------
 
-@app.post("/api/book-requests", response_model=schemas.BookRequestResponse)
+@app.post("/api/book-requests", response_model=schemas.BookRequestResponse, status_code=status.HTTP_201_CREATED)
 def submit_book_request(
     req_in: schemas.BookRequestCreate,
     current_user: Optional[models.User] = Depends(get_optional_user),
     db: Session = Depends(get_db)
 ):
+    title = (req_in.book_title or req_in.title or "").strip()
+    if not title:
+        raise HTTPException(status_code=400, detail="Book title is required.")
+
+    author = (req_in.author or "").strip()
+    if not author:
+        raise HTTPException(status_code=400, detail="Author is required.")
+
+    user_name = (req_in.user_name or (current_user.full_name if current_user else "Library Patron")).strip()
+    user_email = (req_in.user_email or (current_user.email if current_user else "patron@libraryease.org")).strip().lower()
+
     request_obj = models.BookRequest(
         user_id=current_user.id if current_user else None,
-        user_name=req_in.user_name.strip(),
-        user_email=req_in.user_email.strip().lower(),
-        book_title=req_in.book_title.strip(),
-        author=req_in.author.strip(),
-        category=req_in.category,
+        user_name=user_name,
+        user_email=user_email,
+        book_title=title,
+        author=author,
+        category=req_in.category or "General",
         reason=req_in.reason,
         status="pending"
     )
@@ -1422,11 +1430,15 @@ def submit_book_request(
     db.refresh(request_obj)
     return request_obj
 
+@app.get("/api/book-requests", response_model=List[schemas.BookRequestResponse])
 @app.get("/api/book-requests/my", response_model=List[schemas.BookRequestResponse])
 def get_my_book_requests(
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    # If librarian accesses root book-requests, return all; if patron, return their own
+    if current_user.role == "librarian":
+        return db.query(models.BookRequest).order_by(models.BookRequest.created_at.desc()).all()
     return db.query(models.BookRequest).filter(
         or_(
             models.BookRequest.user_id == current_user.id,
@@ -1453,15 +1465,16 @@ def update_book_request_status(
         raise HTTPException(status_code=404, detail="Book request not found.")
 
     breq.status = update_data.status
-    if update_data.librarian_response:
-        breq.librarian_response = update_data.librarian_response
+    note_text = update_data.librarian_response or update_data.librarian_notes
+    if note_text:
+        breq.librarian_response = note_text
 
         if breq.user_id:
             db.add(models.Notification(
                 user_id=breq.user_id,
                 reminder_type="general",
                 title=f"Book Request Update: {breq.book_title}",
-                message=f"Status: {breq.status.upper()}. Librarian note: {update_data.librarian_response}",
+                message=f"Status: {breq.status.upper()}. Librarian note: {note_text}",
                 is_read=False
             ))
 

@@ -1,5 +1,10 @@
 import os
+import secrets
+import logging
+from typing import List
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 try:
     from dotenv import load_dotenv
@@ -28,9 +33,62 @@ class Settings:
     SQLITE_URL: str = os.getenv("SQLITE_URL", f"sqlite:///{_DB_FILE}")
     
     # Security & JWT Authentication
-    JWT_SECRET: str = os.getenv("JWT_SECRET", "libraryease-super-secure-production-jwt-key-2026-xyz")
-    JWT_ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
+    _runtime_jwt_secret: str = ""
+
+    @property
+    def JWT_SECRET(self) -> str:
+        """
+        Securely loads JWT_SECRET from environment variables or active .env file.
+        If unconfigured in local development, generates a cryptographically strong
+        random 256-bit secret so that zero secrets are hardcoded in source code.
+        """
+        # 1. Check OS environment variable
+        env_secret = os.getenv("JWT_SECRET", "").strip()
+        if env_secret:
+            return env_secret
+        
+        # 2. Check local backend/.env file directly
+        try:
+            env_file = Path(__file__).resolve().parent / ".env"
+            if env_file.exists():
+                for line in env_file.read_text(encoding="utf-8").splitlines():
+                    stripped = line.strip()
+                    if stripped.startswith("JWT_SECRET="):
+                        k = stripped.split("=", 1)[1].strip()
+                        if k and not k.startswith("your_"):
+                            return k
+        except Exception:
+            pass
+
+        # 3. Development Fallback: Generate a strong random key for session
+        if not self._runtime_jwt_secret:
+            self._runtime_jwt_secret = secrets.token_hex(32)
+            logger.info("Generated cryptographically strong development JWT secret for local session.")
+        return self._runtime_jwt_secret
+
+    JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM", "HS256")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", str(60 * 24 * 7)))  # 7 days
+
+    # CORS Configuration
+    @property
+    def CORS_ORIGINS(self) -> List[str]:
+        """
+        Returns allowed origins for CORS.
+        Always includes verified local development origins. Additional production
+        origins can be configured via the CORS_ORIGINS or ALLOWED_ORIGINS environment variable.
+        Wildcard '*' origins are strictly filtered out to prevent credential exposure.
+        """
+        origins = [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+        ]
+        extra_origins = os.getenv("CORS_ORIGINS", os.getenv("ALLOWED_ORIGINS", "")).strip()
+        if extra_origins:
+            for item in extra_origins.split(","):
+                cleaned = item.strip().rstrip("/")
+                if cleaned and cleaned != "*" and cleaned not in origins:
+                    origins.append(cleaned)
+        return origins
     
     # AI Search & Metadata
     @property

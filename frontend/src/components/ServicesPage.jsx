@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { LIBRARY_SERVICES } from '../data/servicesData';
 
-export default function ServicesPage({ onNavigateToExplore, onNavigateToAssistant, onShowToast }) {
+export default function ServicesPage({ onNavigateToExplore, onNavigateToAssistant, onShowToast, onRequestBook }) {
   const iconMap = {
     Tablet: Tablet,
     DoorClosed: DoorClosed,
@@ -83,12 +83,14 @@ export default function ServicesPage({ onNavigateToExplore, onNavigateToAssistan
                     onClick={() => {
                       if (srv.id === 'service-digital') {
                         onNavigateToExplore();
+                      } else if (srv.id === 'service-interlibrary' && onRequestBook) {
+                        onRequestBook();
                       } else if (onShowToast) {
                         onShowToast(`Service Reservation: Booking for "${srv.title}" is simulated for demonstration.`);
                       }
                     }}
                   >
-                    <span>{srv.actionText}</span>
+                    <span>{srv.id === 'service-interlibrary' ? 'Request a Book via ILL' : srv.actionText}</span>
                     <ArrowRight size={14} />
                   </button>
                 </div>
