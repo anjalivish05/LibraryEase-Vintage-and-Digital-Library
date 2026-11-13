@@ -60,6 +60,31 @@ export default function App() {
   const [homeCategory, setHomeCategory] = useState('All Categories');
   const [toastMessage, setToastMessage] = useState(null);
 
+  // Global Theme State: 'light' or 'dark' with persistence and system scheme fallback
+  const [theme, setTheme] = useState(() => {
+    try {
+      const saved = localStorage.getItem('libraryease_theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    } catch {
+      return 'light';
+    }
+  });
+
+  useEffect(() => {
+    try {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.body.setAttribute('data-theme', theme);
+      localStorage.setItem('libraryease_theme', theme);
+    } catch (e) {
+      console.error('Failed to sync theme:', e);
+    }
+  }, [theme]);
+
+  const handleToggleTheme = useCallback(() => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  }, []);
+
   // Authentication & Notifications State
   const [currentUser, setCurrentUser] = useState(api.getStoredUser());
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);

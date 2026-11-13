@@ -19,7 +19,9 @@ import {
   BarChart3,
   Menu,
   X,
-  Check
+  Check,
+  Sun,
+  Moon
 } from 'lucide-react';
 import './Navbar.css';
 
@@ -30,7 +32,9 @@ export default function Navbar({
   unreadNotifications = 0,
   currentUser = null,
   onOpenNotifications,
-  onOpenAuth
+  onOpenAuth,
+  theme = 'light',
+  onToggleTheme
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
@@ -365,8 +369,23 @@ export default function Navbar({
             </button>
           </nav>
 
-          {/* Right Section: Actions (Notifications, My Library, Admin Portal, Account) */}
+          {/* Right Section: Actions (Theme Toggle, Notifications, My Library, Admin Portal, Account) */}
           <div className="heritage-nav-actions">
+            {/* Theme Mode Toggle Button */}
+            <button
+              type="button"
+              className="heritage-theme-toggle-btn"
+              onClick={onToggleTheme}
+              title={theme === 'dark' ? 'Switch to Light Theme (Antique Cream)' : 'Switch to Dark Theme (Atmospheric Night)'}
+              aria-label={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+            >
+              {theme === 'dark' ? (
+                <Sun size={17} className="theme-toggle-icon sun-icon" />
+              ) : (
+                <Moon size={17} className="theme-toggle-icon moon-icon" />
+              )}
+            </button>
+
             {/* 1. Notification Bell with Count */}
             <button
               type="button"
@@ -559,6 +578,16 @@ export default function Navbar({
             </div>
 
             <div className="heritage-mobile-footer">
+              <button
+                type="button"
+                className="heritage-theme-toggle-btn-mobile"
+                onClick={onToggleTheme}
+                title="Toggle Light or Dark Theme"
+              >
+                {theme === 'dark' ? <Sun size={16} className="sun-icon" /> : <Moon size={16} className="moon-icon" />}
+                <span>{theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}</span>
+              </button>
+
               <button
                 type="button"
                 className="heritage-library-btn"

@@ -883,3 +883,276 @@
     display: none;
   }
 }
+
+
+/* --------------------------------------------------------------------------
+   Theme Mode Toggle Button Styles
+   -------------------------------------------------------------------------- */
+.heritage-theme-toggle-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #FFFDF9;
+  border: 1.5px solid var(--nav-parchment, #B6A89C);
+  color: var(--nav-antique-gold, #B68A4C);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.heritage-theme-toggle-btn:hover {
+  background: var(--color-parchment-light, #F8F2EA);
+  border-color: var(--nav-antique-gold, #B68A4C);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.theme-toggle-icon {
+  transition: transform 0.35s ease;
+}
+
+.heritage-theme-toggle-btn:hover .theme-toggle-icon {
+  transform: rotate(20deg);
+}
+
+.sun-icon {
+  color: #D4A76A;
+}
+
+.moon-icon {
+  color: #5C4033;
+}
+
+.heritage-theme-toggle-btn-mobile {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--color-surface, #FFFDF8);
+  border: 1px solid var(--nav-parchment, #B6A89C);
+  color: var(--color-text, #2B1E1A);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Navbar Dark Mode Theme Overrides
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] .heritage-topbar {
+  background-color: #120E0C;
+  border-bottom: 1px solid rgba(212, 167, 106, 0.25);
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .topbar-membership-badge {
+  background-color: #2D231E;
+  color: #D4A76A;
+  border-color: rgba(212, 167, 106, 0.4);
+}
+
+[data-theme="dark"] .topbar-welcome-strong {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .topbar-location-btn {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .location-dropdown-menu {
+  background: #241C18;
+  border-color: #D4A76A;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .location-dropdown-header {
+  color: #D4A76A;
+  border-bottom-color: #3D302A;
+}
+
+[data-theme="dark"] .location-dropdown-item {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .location-dropdown-item:hover,
+[data-theme="dark"] .location-dropdown-item.active {
+  background: #2D231E;
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .heritage-main-header {
+  background-color: #201815;
+  border-bottom: 1px solid #3D302A;
+}
+
+[data-theme="dark"] .heritage-brand-title {
+  color: #A83849;
+}
+
+[data-theme="dark"] .heritage-brand-subtitle {
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .heritage-logo-square {
+  background: #A83849;
+  border-color: #D4A76A;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .heritage-nav-item {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .heritage-nav-item:hover {
+  background: rgba(212, 167, 106, 0.12);
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .heritage-nav-item.active-pill {
+  background: #A83849;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .services-mega-menu {
+  background: #241C18;
+  border-color: #D4A76A;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
+}
+
+[data-theme="dark"] .services-mega-caret {
+  border-bottom-color: #D4A76A;
+}
+
+[data-theme="dark"] .services-mega-caret::after {
+  border-bottom-color: #241C18;
+}
+
+[data-theme="dark"] .service-card-item {
+  background: #201815;
+  border-color: #3D302A;
+}
+
+[data-theme="dark"] .service-card-item:hover {
+  background: #2D231E;
+  border-color: #D4A76A;
+}
+
+[data-theme="dark"] .service-card-title {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .service-card-desc {
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .service-card-icon-wrap {
+  background: rgba(212, 167, 106, 0.15);
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .heritage-ai-btn {
+  background: #2D231E;
+  border-color: #A83849;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .heritage-ai-btn:hover {
+  background: #A83849;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .heritage-theme-toggle-btn {
+  background: #241C18;
+  border-color: #3D302A;
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .heritage-theme-toggle-btn:hover {
+  background: #2D231E;
+  border-color: #D4A76A;
+}
+
+[data-theme="dark"] .heritage-notif-btn {
+  background: #241C18;
+  border-color: #3D302A;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .heritage-notif-btn:hover {
+  border-color: #D4A76A;
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .heritage-library-btn {
+  background: #241C18;
+  border-color: #3D302A;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .heritage-library-btn:hover,
+[data-theme="dark"] .heritage-library-btn.active {
+  background: #2D231E;
+  border-color: #D4A76A;
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .heritage-admin-btn {
+  background: #A83849;
+  border-color: #D4A76A;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .heritage-admin-btn:hover {
+  background: #C24357;
+  border-color: #E5BF88;
+}
+
+[data-theme="dark"] .heritage-account-btn {
+  background: #241C18;
+  border-color: #3D302A;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .heritage-account-btn:hover {
+  border-color: #D4A76A;
+}
+
+[data-theme="dark"] .account-label-text {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .account-avatar-circle {
+  background: #2D231E;
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .heritage-mobile-drawer {
+  background: #201815;
+  border-top-color: #3D302A;
+}
+
+[data-theme="dark"] .heritage-mobile-link {
+  color: #F5EFEB;
+  border-bottom-color: rgba(61, 48, 42, 0.4);
+}
+
+[data-theme="dark"] .heritage-mobile-link:hover,
+[data-theme="dark"] .heritage-mobile-link.active {
+  background: rgba(168, 56, 73, 0.2);
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .heritage-theme-toggle-btn-mobile {
+  background: #241C18;
+  border-color: #3D302A;
+  color: #F5EFEB;
+}

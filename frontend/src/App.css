@@ -8783,3 +8783,617 @@
     flex: 1 1 100%;
   }
 }
+
+
+/* ==========================================================================
+   LibraryEase — Global Comprehensive Dark Theme Styles
+   ========================================================================== */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="dark"] body {
+  background-color: #181311;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .main-content-area {
+  background-color: #181311;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .global-toast-notification {
+  background: #241C18;
+  border: 1px solid #D4A76A;
+  color: #F5EFEB;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+}
+
+/* --- Hero Section & Homepage --- */
+[data-theme="dark"] .hero-section {
+  background: #181311;
+  color: #F5EFEB;
+  border-bottom: 2px solid #3D302A;
+}
+
+[data-theme="dark"] .hero-badge-strip {
+  background: #201815;
+  border-color: rgba(212, 167, 106, 0.35);
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .hero-title-main {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .hero-title-gradient {
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .hero-lead-text {
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .hero-search-box {
+  background: #241C18;
+  border: 1.5px solid #4A3B34;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .hero-search-box:focus-within {
+  border-color: #D4A76A;
+  box-shadow: 0 0 0 3px rgba(212, 167, 106, 0.2);
+}
+
+[data-theme="dark"] .hero-search-input {
+  background: transparent;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .hero-search-input::placeholder {
+  color: #B8A898;
+}
+
+[data-theme="dark"] .hero-category-select {
+  background: #241C18;
+  color: #F5EFEB;
+  border-color: #4A3B34;
+}
+
+[data-theme="dark"] .hero-search-btn {
+  background: #A83849;
+  color: #F5EFEB;
+  border: 1px solid #A83849;
+}
+
+[data-theme="dark"] .hero-search-btn:hover {
+  background: #C24357;
+  border-color: #C24357;
+}
+
+[data-theme="dark"] .hero-stat-card {
+  background: #241C18;
+  border: 1px solid #3D302A;
+}
+
+[data-theme="dark"] .hero-stat-number {
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .hero-stat-label {
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .heritage-feature-card,
+[data-theme="dark"] .feature-card {
+  background: #241C18;
+  border: 1px solid #3D302A;
+}
+
+[data-theme="dark"] .heritage-feature-card:hover,
+[data-theme="dark"] .feature-card:hover {
+  border-color: #D4A76A;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .feature-card-icon {
+  background: rgba(212, 167, 106, 0.15);
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .feature-card-title {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .feature-card-desc {
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .reading-room-frame {
+  background: #241C18;
+  border: 1px solid #3D302A;
+}
+
+[data-theme="dark"] .reading-room-tag {
+  background: #2D231E;
+  color: #D4A76A;
+  border: 1px solid rgba(212, 167, 106, 0.4);
+}
+
+[data-theme="dark"] .section-heading-dark {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .section-subhead-dark {
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .quote-strip-container {
+  background: #120E0C;
+  border-top: 1px solid #3D302A;
+  border-bottom: 1px solid #3D302A;
+}
+
+[data-theme="dark"] .quote-body-text {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .quote-author-text {
+  color: #D4A76A;
+}
+
+/* --- Book Cards & Catalog --- */
+[data-theme="dark"] .book-card-vertical,
+[data-theme="dark"] .book-card,
+[data-theme="dark"] .featured-book-card {
+  background: #241C18;
+  border: 1px solid #3D302A;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .book-card-vertical:hover,
+[data-theme="dark"] .book-card:hover,
+[data-theme="dark"] .featured-book-card:hover {
+  border-color: #D4A76A;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .book-title-clamp,
+[data-theme="dark"] .book-card-title {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .book-author-text,
+[data-theme="dark"] .book-card-author {
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .book-category-pill {
+  background: #2D231E;
+  color: #D6C8B8;
+  border: 1px solid #3D302A;
+}
+
+[data-theme="dark"] .badge-available {
+  background: rgba(212, 167, 106, 0.15);
+  color: #D4A76A;
+  border: 1px solid #D4A76A;
+}
+
+[data-theme="dark"] .badge-reserved {
+  background: rgba(168, 56, 73, 0.2);
+  color: #E58B97;
+  border: 1px solid #A83849;
+}
+
+[data-theme="dark"] .book-action-btn-primary {
+  background: #A83849;
+  color: #F5EFEB;
+  border: 1px solid #A83849;
+}
+
+[data-theme="dark"] .book-action-btn-primary:hover {
+  background: #C24357;
+  border-color: #C24357;
+}
+
+[data-theme="dark"] .book-action-btn-secondary {
+  background: #241C18;
+  color: #F5EFEB;
+  border: 1px solid #3D302A;
+}
+
+[data-theme="dark"] .book-action-btn-secondary:hover {
+  background: #2D231E;
+  border-color: #D4A76A;
+  color: #D4A76A;
+}
+
+/* --- Explore Page Controls --- */
+[data-theme="dark"] .explore-search-container,
+[data-theme="dark"] .explore-header-section {
+  background: #201815;
+  border-color: #3D302A;
+}
+
+[data-theme="dark"] .explore-search-input {
+  background: #241C18;
+  color: #F5EFEB;
+  border-color: #4A3B34;
+}
+
+[data-theme="dark"] .explore-search-input:focus {
+  border-color: #D4A76A;
+}
+
+[data-theme="dark"] .explore-category-select {
+  background: #241C18;
+  color: #F5EFEB;
+  border-color: #4A3B34;
+}
+
+[data-theme="dark"] .filter-chip-btn {
+  background: #241C18;
+  border: 1px solid #3D302A;
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .filter-chip-btn:hover {
+  border-color: #D4A76A;
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .filter-chip-btn.active {
+  background: #A83849;
+  border-color: #A83849;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .ai-recommend-banner {
+  background: #2A1C22;
+  border: 1px solid #A83849;
+}
+
+[data-theme="dark"] .ai-banner-title {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .ai-banner-desc {
+  color: #D6C8B8;
+}
+
+/* --- Find Libraries Page --- */
+[data-theme="dark"] .amenity-filter-group {
+  background: #201815;
+  border-color: #3D302A;
+}
+
+[data-theme="dark"] .amenity-label {
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .amenity-pill {
+  background: #241C18;
+  border: 1px solid #3D302A;
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .amenity-pill:hover {
+  border-color: #D4A76A;
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .amenity-pill.active-forest {
+  background: #A83849;
+  border-color: #A83849;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .mumbai-cartography {
+  background: #1A1614;
+  border-color: #3D302A;
+}
+
+[data-theme="dark"] .map-zoom-controls {
+  background: #241C18;
+  border-color: #3D302A;
+}
+
+[data-theme="dark"] .map-zoom-btn {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .map-zoom-btn:hover {
+  background: #2D231E;
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .map-legend {
+  background: rgba(32, 24, 21, 0.94);
+  border-color: #3D302A;
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .map-pin-btn {
+  background: #241C18;
+  border-color: #D4A76A;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .map-pin-btn.pin-selected {
+  background: #A83849;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .active-branch-detail-panel {
+  background: #241C18;
+  border-color: #D4A76A;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .active-branch-title {
+  color: #A83849;
+}
+
+[data-theme="dark"] .active-branch-locality {
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .active-branch-address {
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .active-branch-meta {
+  background: #201815;
+  border-color: #3D302A;
+}
+
+[data-theme="dark"] .active-transit-strip {
+  background: #201815;
+  border-color: #D4A76A;
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .branch-tag-chip {
+  background: #201815;
+  border-color: #3D302A;
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .active-branch-actions {
+  background: #201815;
+  border-top-color: #3D302A;
+}
+
+[data-theme="dark"] .active-branch-actions .lib-btn-primary {
+  background: #A83849;
+  border-color: #A83849;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .active-branch-actions .lib-btn-secondary {
+  background: #241C18;
+  border-color: #3D302A;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .active-branch-actions .lib-btn-tertiary {
+  background: transparent;
+  border-color: #3D302A;
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .library-branch-card {
+  background: #241C18;
+  border-color: #4A3B34;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] .library-branch-card:hover {
+  border-color: #D4A76A;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+}
+
+[data-theme="dark"] .library-card-title {
+  color: #A83849;
+}
+
+[data-theme="dark"] .lib-neighborhood {
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .lib-card-description {
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .lib-address-text,
+[data-theme="dark"] .hours-main {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .hours-sub,
+[data-theme="dark"] .lib-contact-text {
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .lib-access-note-box {
+  background: #201815;
+  border-left-color: #D4A76A;
+}
+
+[data-theme="dark"] .access-note-title {
+  color: #A83849;
+}
+
+[data-theme="dark"] .access-note-body {
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .amenity-tag-item {
+  background: #201815;
+  border-color: #3D302A;
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .lib-distance-pill {
+  background: #201815;
+  border-color: #3D302A;
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .lib-card-footer {
+  border-top-color: #3D302A;
+}
+
+[data-theme="dark"] .lib-card-footer .lib-btn-primary {
+  background: #A83849;
+  border-color: #A83849;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .lib-card-footer .lib-btn-secondary {
+  background: #201815;
+  border-color: #3D302A;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .lib-card-footer .lib-btn-secondary:hover {
+  background: #A83849;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .lib-card-footer .lib-btn-tertiary {
+  border-color: #3D302A;
+  color: #D6C8B8;
+}
+
+/* --- Services, Feedback, About, My Library Pages --- */
+[data-theme="dark"] .service-detail-card,
+[data-theme="dark"] .feedback-form-card,
+[data-theme="dark"] .about-content-card,
+[data-theme="dark"] .my-library-card,
+[data-theme="dark"] .librarian-dashboard-card {
+  background: #241C18;
+  border: 1px solid #3D302A;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .form-input,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] .form-textarea,
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="email"],
+[data-theme="dark"] input[type="password"],
+[data-theme="dark"] textarea {
+  background-color: #1A1310;
+  border: 1px solid #4A3B34;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .form-input:focus,
+[data-theme="dark"] .form-select:focus,
+[data-theme="dark"] .form-textarea:focus,
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus {
+  border-color: #D4A76A;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(212, 167, 106, 0.2);
+}
+
+[data-theme="dark"] .form-label,
+[data-theme="dark"] label {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .borrowed-item-row {
+  background: #241C18;
+  border: 1px solid #3D302A;
+}
+
+[data-theme="dark"] .borrowed-book-title {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .borrowed-book-meta {
+  color: #D6C8B8;
+}
+
+/* --- Modals & Notification Drawer --- */
+[data-theme="dark"] .modal-overlay,
+[data-theme="dark"] .auth-modal-overlay {
+  background-color: rgba(14, 10, 8, 0.85);
+  backdrop-filter: blur(4px);
+}
+
+[data-theme="dark"] .modal-content-card,
+[data-theme="dark"] .book-modal-container,
+[data-theme="dark"] .auth-modal-box,
+[data-theme="dark"] .modal-container {
+  background: #241C18;
+  border: 1px solid #D4A76A;
+  color: #F5EFEB;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
+}
+
+[data-theme="dark"] .modal-book-desc {
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .modal-detail-row {
+  border-bottom: 1px solid #3D302A;
+}
+
+[data-theme="dark"] .notification-drawer-panel {
+  background: #201815;
+  border-left: 1px solid #3D302A;
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .notification-card {
+  background: #241C18;
+  border: 1px solid #3D302A;
+}
+
+[data-theme="dark"] .notification-card.unread {
+  border-left: 3px solid #D4A76A;
+  background: #2A201C;
+}
+
+[data-theme="dark"] .notification-title {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .notification-msg {
+  color: #D6C8B8;
+}
+
+/* --- Footer --- */
+[data-theme="dark"] .site-footer {
+  background-color: #120E0C;
+  border-top: 1px solid #3D302A;
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .footer-brand-title {
+  color: #A83849;
+}
+
+[data-theme="dark"] .footer-heading {
+  color: #F5EFEB;
+}
+
+[data-theme="dark"] .footer-link {
+  color: #D6C8B8;
+}
+
+[data-theme="dark"] .footer-link:hover {
+  color: #D4A76A;
+}
+
+[data-theme="dark"] .footer-bottom-strip {
+  background-color: #0A0807;
+  border-top: 1px solid #2D231E;
+  color: #B8A898;
+}
