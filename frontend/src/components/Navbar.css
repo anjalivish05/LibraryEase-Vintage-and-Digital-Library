@@ -750,9 +750,12 @@
 .heritage-mobile-drawer {
   background: var(--nav-warm-ivory);
   border-top: 1.5px solid var(--nav-antique-gold);
-  padding: 16px 20px 24px;
+  padding: 16px 18px 28px;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
   animation: fadeInDown 0.2s ease-out;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .heritage-mobile-links {
@@ -766,16 +769,18 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  min-height: 44px;
   padding: 10px 14px;
   background: var(--nav-cream-bg);
   border: 1px solid var(--nav-parchment);
   border-radius: 8px;
   color: var(--nav-ink-charcoal);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-weight: 500;
   text-align: left;
   cursor: pointer;
   transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
 .heritage-mobile-link:hover,
@@ -802,17 +807,20 @@
 .mobile-subservice-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
-  padding: 8px 10px;
+  min-height: 42px;
+  padding: 8px 12px;
   background: transparent;
   border: none;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--nav-deep-forest);
   cursor: pointer;
   text-align: left;
   border-radius: 6px;
+  transition: background 0.15s ease;
+  box-sizing: border-box;
 }
 
 .mobile-subservice-btn:hover {
@@ -820,7 +828,7 @@
 }
 
 .heritage-mobile-footer {
-  margin-top: 16px;
+  margin-top: 18px;
   padding-top: 14px;
   border-top: 1px solid var(--nav-parchment);
   display: flex;
@@ -828,15 +836,25 @@
   gap: 10px;
 }
 
+.heritage-mobile-footer button {
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
 /* --------------------------------------------------------------------------
-   Responsive Breakpoints
+   Responsive Breakpoints System (Desktop -> Small Mobile)
    -------------------------------------------------------------------------- */
-@media (max-width: 1220px) {
+
+/* 1. Small Desktop (1024px – 1279px) */
+@media (max-width: 1279px) {
+  .heritage-header-container {
+    padding: 0 16px;
+  }
   .heritage-nav-menu {
     gap: 6px;
   }
   .heritage-nav-item {
-    min-width: 50px;
+    min-width: 48px;
     padding: 4px 6px;
   }
   .nav-item-label {
@@ -849,10 +867,11 @@
     height: 72px;
   }
   .services-mega-menu {
-    min-width: 600px;
+    min-width: 580px;
   }
 }
 
+/* 2. Tablet (768px – 1023px) */
 @media (max-width: 1040px) {
   .heritage-nav-menu {
     display: none;
@@ -866,9 +885,14 @@
   .heritage-topbar-center {
     display: none;
   }
+  .heritage-header-container {
+    height: 68px;
+    padding: 0 16px;
+  }
 }
 
-@media (max-width: 640px) {
+/* 3. Large Mobile (481px – 767px) */
+@media (max-width: 767px) {
   .heritage-admin-btn {
     display: none;
   }
@@ -881,5 +905,121 @@
   }
   .heritage-brand-subtitle {
     display: none;
+  }
+  .heritage-header-container {
+    height: 64px;
+    padding: 0 14px;
+    gap: 10px;
+  }
+  .heritage-nav-actions {
+    gap: 6px;
+  }
+  .heritage-logo-square {
+    width: 38px;
+    height: 38px;
+  }
+  .heritage-brand-title {
+    font-size: 1.2rem;
+  }
+  .heritage-topbar-inner {
+    padding: 0 14px;
+  }
+}
+
+/* 4. Standard Mobile (376px – 480px) */
+@media (max-width: 480px) {
+  .heritage-topbar {
+    padding: 4px 0;
+  }
+  .heritage-topbar-inner {
+    padding: 0 10px;
+    gap: 8px;
+  }
+  .topbar-membership-badge {
+    font-size: 0.68rem;
+    padding: 2px 8px;
+  }
+  .topbar-location-btn {
+    font-size: 0.72rem;
+    padding: 2px 4px;
+  }
+  .topbar-divider {
+    display: none;
+  }
+  .heritage-header-container {
+    height: 62px;
+    padding: 0 10px;
+    gap: 6px;
+  }
+  .heritage-brand-btn {
+    gap: 8px;
+    padding: 2px;
+  }
+  .heritage-logo-square {
+    width: 34px;
+    height: 34px;
+    border-radius: 7px;
+  }
+  .heritage-brand-title {
+    font-size: 1.15rem;
+  }
+  .heritage-nav-actions {
+    gap: 4px;
+  }
+  .heritage-notif-btn,
+  .heritage-library-btn,
+  .heritage-account-btn,
+  .heritage-mobile-toggle {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .location-dropdown-menu {
+    right: 10px;
+    width: calc(100vw - 20px);
+    max-width: 280px;
+  }
+}
+
+/* 5. Small Mobile (320px – 375px) */
+@media (max-width: 375px) {
+  .heritage-header-container {
+    height: 58px;
+    padding: 0 8px;
+    gap: 4px;
+  }
+  .heritage-brand-btn {
+    gap: 6px;
+  }
+  .heritage-logo-square {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+  }
+  .heritage-brand-title {
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+  }
+  .heritage-nav-actions {
+    gap: 3px;
+  }
+  .heritage-notif-btn,
+  .heritage-library-btn,
+  .heritage-account-btn,
+  .heritage-mobile-toggle {
+    width: 34px;
+    height: 34px;
+  }
+  .topbar-membership-badge span {
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .heritage-mobile-drawer {
+    padding: 12px 10px 24px;
   }
 }

@@ -35,6 +35,7 @@ import {
   LIBRARY_DESCRIPTIONS
 } from '../data/librariesData';
 import { api } from '../services/api';
+import MumbaiLeafletMap from './MumbaiLeafletMap';
 
 export default function LibrariesPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,6 +45,7 @@ export default function LibrariesPage() {
   const [activeBranchId, setActiveBranchId] = useState('mumbai-lib-1');
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'map'
   const [zoomScale, setZoomScale] = useState(1);
+  const [mapResetKey, setMapResetKey] = useState(0);
   const [librariesList, setLibrariesList] = useState(MUMBAI_LIBRARIES);
   const [isLoadingBackend, setIsLoadingBackend] = useState(false);
 
@@ -293,202 +295,41 @@ export default function LibrariesPage() {
           </div>
         </div>
 
-        {/* View Mode 1: Interactive Mumbai Cartographic Map */}
+        {/* View Mode 1: Real Interactive Mumbai Geographical Map (Leaflet + OpenStreetMap) */}
         {viewMode === 'map' && (
           <div className="interactive-map-layout">
-            <div className="interactive-map-visual">
-              {/* Zoom Controls */}
-              <div className="map-zoom-controls" aria-label="Mumbai Map Navigation Controls">
+            <div className="interactive-map-visual leaflet-map-frame">
+              {/* Real Leaflet Map with OpenStreetMap Tile Layer */}
+              <MumbaiLeafletMap
+                libraries={filteredLibraries}
+                activeBranchId={activeBranch?.id}
+                onSelectBranch={handleSelectBranch}
+                getMapLink={getMapLink}
+                resetKey={mapResetKey}
+              />
+
+              {/* Quick Reset Mumbai Overview Control */}
+              <div className="map-top-quick-actions">
                 <button
                   type="button"
-                  className="map-zoom-btn"
-                  onClick={handleZoomIn}
-                  title="Zoom In"
-                  aria-label="Zoom In"
-                >
-                  <Plus size={15} />
-                </button>
-                <button
-                  type="button"
-                  className="map-zoom-btn"
-                  onClick={handleZoomOut}
-                  title="Zoom Out"
-                  aria-label="Zoom Out"
-                >
-                  <Minus size={15} />
-                </button>
-                <button
-                  type="button"
-                  className="map-zoom-btn"
-                  onClick={handleResetZoom}
-                  title="Fit All Mumbai Libraries"
-                  aria-label="Fit All Mumbai Libraries"
+                  className="map-reset-view-btn"
+                  onClick={() => setMapResetKey((prev) => prev + 1)}
+                  title="Reset to full Mumbai overview"
                 >
                   <RotateCcw size={13} />
+                  <span>Reset Mumbai View</span>
                 </button>
               </div>
 
-              <div className="map-canvas-mockup mumbai-cartography">
-                {/* Transform Layer for Zoom & Pan */}
-                <div
-                  className="map-transform-layer"
-                  style={{
-                    transform: `scale(${zoomScale})`,
-                    transformOrigin: `${activeBranchPin.left} ${activeBranchPin.top}`
-                  }}
-                >
-                  {/* Vintage Cartographic Grid */}
-                  <div className="map-grid-lines" />
-                  
-                  {/* Compass Rose */}
-                  <div className="map-compass-rose" aria-hidden="true">
-                    <Compass size={38} />
-                  </div>
-
-                  {/* Mumbai Coastline, Arabian Sea, Harbour & Arterials SVG */}
-                  <svg className="map-vector-overlay" viewBox="0 0 600 520" preserveAspectRatio="none">
-                    <defs>
-                      <pattern id="seaPattern" width="20" height="20" patternUnits="userSpaceOnUse">
-                        <path d="M 0,10 Q 5,6 10,10 T 20,10" fill="none" stroke="#B6A89C" strokeWidth="1" opacity="0.6" />
-                      </pattern>
-                      <linearGradient id="arabianSeaGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#F2EAE0" stopOpacity="0.8" />
-                        <stop offset="100%" stopColor="#F8F2EA" stopOpacity="0" />
-                      </linearGradient>
-                      <linearGradient id="harbourGrad" x1="100%" y1="0%" x2="0%" y2="0%">
-                        <stop offset="0%" stopColor="#F0E6DD" stopOpacity="0.7" />
-                        <stop offset="100%" stopColor="#F8F2EA" stopOpacity="0" />
-                      </linearGradient>
-                    </defs>
-
-                    {/* Arabian Sea Water Body on West (Left) */}
-                    <rect x="0" y="0" width="200" height="520" fill="url(#arabianSeaGrad)" />
-                    <rect x="0" y="0" width="180" height="520" fill="url(#seaPattern)" opacity="0.5" />
-                    
-                    {/* Mumbai Harbour / Thane Creek Water Body on East (Right) */}
-                    <rect x="420" y="0" width="180" height="520" fill="url(#harbourGrad)" />
-
-                    {/* Stylized Mumbai Coastal Contour Line (Arabian Sea shoreline) */}
-                    <path 
-                      d="M 190,0 
-                         C 195,50 190,90 200,130 
-                         C 205,170 215,200 220,240 
-                         C 210,270 205,300 225,330 
-                         C 235,360 250,380 255,410 
-                         C 260,440 262,470 270,520"
-                      fill="none" 
-                      stroke="#8FA892" 
-                      strokeWidth="3.5" 
-                      opacity="0.85" 
-                    />
-
-                    {/* Stylized Eastern Shoreline (Thane Creek & Harbour) */}
-                    <path 
-                      d="M 450,0 
-                         C 440,70 435,140 420,200 
-                         C 410,260 400,320 380,380 
-                         C 365,420 345,460 330,520"
-                      fill="none" 
-                      stroke="#8FA892" 
-                      strokeWidth="2.5" 
-                      opacity="0.75" 
-                    />
-
-                    {/* Powai Lake (Inland Water Body in Eastern Suburbs) */}
-                    <ellipse cx="400" cy="210" rx="35" ry="18" fill="#DCE7DB" stroke="#8FA892" strokeWidth="1.5" />
-                    <text x="400" y="214" textAnchor="middle" fill="#5A745F" fontSize="8" fontFamily="serif" fontStyle="italic">
-                      Powai Lake
-                    </text>
-
-                    {/* Mahim Bay & Mithi River Mouth */}
-                    <path 
-                      d="M 220,295 C 255,300 290,290 320,285" 
-                      fill="none" 
-                      stroke="#A5BFA8" 
-                      strokeWidth="4" 
-                      opacity="0.6" 
-                    />
-                    <text x="245" y="312" fill="#69856C" fontSize="7.5" fontStyle="italic">Mahim Bay</text>
-
-                    {/* Bandra-Worli Sea Link Arc */}
-                    <path 
-                      d="M 228,300 C 240,325 245,345 250,365" 
-                      fill="none" 
-                      stroke="#D9A441" 
-                      strokeWidth="2.2" 
-                      strokeDasharray="4,2" 
-                      opacity="0.85" 
-                    />
-                    <text x="260" y="340" fill="#946C1C" fontSize="6.8" transform="rotate(75, 260, 340)">
-                      Sea Link
-                    </text>
-
-                    {/* Western Railway & Western Express Highway Transit Spine */}
-                    <line x1="205" y1="20" x2="275" y2="480" stroke="#C4B495" strokeWidth="2.5" strokeDasharray="6,3" opacity="0.8" />
-                    {/* Central Railway Transit Spine */}
-                    <line x1="390" y1="20" x2="285" y2="470" stroke="#C4B495" strokeWidth="2" strokeDasharray="6,3" opacity="0.7" />
-
-                    {/* Geographic Cartographic Labels */}
-                    <text x="60" y="260" fill="#758E77" fontSize="13" fontFamily="serif" letterSpacing="4" opacity="0.75">
-                      ARABIAN SEA
-                    </text>
-                    <text x="440" y="330" fill="#758E77" fontSize="10" fontFamily="serif" letterSpacing="2" opacity="0.7">
-                      MUMBAI HARBOUR
-                    </text>
-                    <text x="450" y="100" fill="#758E77" fontSize="9" fontFamily="serif" letterSpacing="2" opacity="0.7">
-                      THANE CREEK
-                    </text>
-
-                    {/* Regional Suburb Annotations */}
-                    <text x="280" y="55" fill="#8C7F6C" fontSize="8.5" fontWeight="bold" letterSpacing="1">
-                      NORTHERN SUBURBS (Borivali • Kandivali)
-                    </text>
-                    <text x="290" y="170" fill="#8C7F6C" fontSize="8.5" fontWeight="bold" letterSpacing="1">
-                      WESTERN SUBURBS (Goregaon • Andheri)
-                    </text>
-                    <text x="295" y="360" fill="#8C7F6C" fontSize="8.5" fontWeight="bold" letterSpacing="1">
-                      CENTRAL (Dadar • Parel)
-                    </text>
-                    <text x="300" y="455" fill="#8C7F6C" fontSize="9" fontWeight="bold" letterSpacing="1">
-                      SOUTH MUMBAI (Fort • Colaba)
-                    </text>
-                  </svg>
-
-                  {/* Mumbai Library Location Pins */}
-                  {filteredLibraries.map((lib) => {
-                    const pos = BRANCH_POSITIONS[lib.id] || lib.mapPosition || { top: '50%', left: '50%' };
-                    const isSelected = activeBranch?.id === lib.id;
-                    const isHeritage = lib.isVerified;
-
-                    return (
-                      <button
-                        key={lib.id}
-                        type="button"
-                        className={`map-pin-btn ${isSelected ? 'pin-selected' : ''} ${isHeritage ? 'pin-heritage' : ''}`}
-                        style={{ top: pos.top, left: pos.left }}
-                        onClick={() => handleSelectBranch(lib.id)}
-                        title={`${lib.name} (${lib.area})`}
-                        aria-pressed={isSelected}
-                      >
-                        <MapPin size={16} className={`pin-icon ${isHeritage ? 'icon-heritage' : ''}`} />
-                        <span className="pin-label">
-                          {lib.area || lib.name.split(' ')[0]}
-                        </span>
-                      </button>
-                    );
-                  })}
+              {/* Map Bottom Legend */}
+              <div className="map-legend mumbai-map-legend">
+                <div className="legend-item">
+                  <span className="legend-dot dot-heritage" />
+                  <span>Verified Heritage Institutions ({librariesList.filter((l) => l.isVerified).length})</span>
                 </div>
-
-                {/* Map Bottom Legend */}
-                <div className="map-legend mumbai-map-legend">
-                  <div className="legend-item">
-                    <span className="legend-dot dot-heritage" />
-                    <span>Verified Historic / Public Libraries ({librariesList.filter(l => l.isVerified).length})</span>
-                  </div>
-                  <div className="legend-item">
-                    <span className="legend-dot dot-demo" />
-                    <span>Demonstration Suburb Facilities ({librariesList.filter(l => !l.isVerified).length})</span>
-                  </div>
+                <div className="legend-item">
+                  <span className="legend-dot dot-demo" />
+                  <span>Demonstration Reading Hubs ({librariesList.filter((l) => !l.isVerified).length})</span>
                 </div>
               </div>
             </div>
@@ -608,10 +449,11 @@ export default function LibrariesPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="lib-btn-primary"
-                    aria-label={`Open ${activeBranch.name} in Google Maps`}
+                    aria-label={`Get directions to ${activeBranch.name} on Google Maps`}
+                    title="Open external navigation on Google Maps"
                   >
                     <Navigation size={15} />
-                    <span>Open in Maps</span>
+                    <span>Get Directions (Google Maps)</span>
                     <ExternalLink size={13} />
                   </a>
                   <a

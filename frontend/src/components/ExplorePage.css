@@ -423,8 +423,9 @@
 /* Responsive Book Card View for Mobile */
 .mobile-book-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
   gap: 20px;
+  width: 100%;
 }
 
 /* Empty State */
@@ -465,9 +466,22 @@
 }
 
 /* --------------------------------------------------------------------------
-   Responsive Adaptations
+   Responsive Adaptations (Tablet & Mobile Breakpoints)
    -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .explore-container {
+    padding: 0 20px;
+  }
+  .explore-main-heading {
+    font-size: 2.1rem;
+  }
+}
+
 @media (max-width: 768px) {
+  .explore-container {
+    padding: 0 16px;
+  }
+
   .explore-search-bar-wrap {
     flex-direction: column;
     border-radius: 16px;
@@ -486,32 +500,113 @@
   .category-dropdown-select {
     width: 100%;
     max-width: none;
+    font-size: 16px;
+  }
+
+  .explore-search-input {
+    font-size: 16px;
   }
 
   .explore-search-action-btn {
     width: 100%;
     justify-content: center;
+    min-height: 44px;
   }
 
   .explore-ai-recommendation-banner {
     flex-direction: column;
     align-items: flex-start;
+    padding: 16px 18px;
+    gap: 14px;
+  }
+
+  .ai-banner-left {
+    min-width: 0;
+    width: 100%;
   }
 
   .ai-banner-launch-btn {
     width: 100%;
     justify-content: center;
+    min-height: 44px;
   }
 
   .quick-filters-row {
     justify-content: flex-start;
     overflow-x: auto;
-    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    padding-bottom: 8px;
+    gap: 8px;
+  }
+
+  .quick-filter-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: 40px;
   }
 
   .quick-results-pill {
     width: 100%;
     margin-left: 0;
     text-align: center;
+    margin-top: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .explore-container {
+    padding: 0 12px;
+  }
+
+  .explore-main-heading {
+    font-size: 1.65rem;
+  }
+
+  .explore-main-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .more-filters-drawer {
+    padding: 12px 14px;
+  }
+
+  .category-tags-grid {
+    gap: 6px;
+  }
+
+  .category-tag-chip {
+    padding: 4px 10px;
+    font-size: 0.74rem;
+  }
+
+  .more-filters-sort-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .more-filters-sort-row select {
+    font-size: 16px !important;
+    width: 100%;
+  }
+
+  .mobile-book-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 375px) {
+  .explore-container {
+    padding: 0 10px;
+  }
+
+  .explore-search-bar-wrap {
+    padding: 10px 12px;
+  }
+
+  .explore-main-heading {
+    font-size: 1.45rem;
   }
 }
