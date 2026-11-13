@@ -21,13 +21,18 @@ import {
   Building,
   Award,
   Globe,
-  Train
+  Train,
+  Sparkles
 } from 'lucide-react';
 import { 
   MUMBAI_LIBRARIES, 
   MUMBAI_LOCALITIES, 
   MUMBAI_FACILITIES, 
-  BRANCH_POSITIONS 
+  BRANCH_POSITIONS,
+  LIBRARY_IMAGES,
+  LIBRARY_CARD_NAMES,
+  LIBRARY_LOCATIONS,
+  LIBRARY_DESCRIPTIONS
 } from '../data/librariesData';
 import { api } from '../services/api';
 
@@ -344,15 +349,15 @@ export default function LibrariesPage() {
                   <svg className="map-vector-overlay" viewBox="0 0 600 520" preserveAspectRatio="none">
                     <defs>
                       <pattern id="seaPattern" width="20" height="20" patternUnits="userSpaceOnUse">
-                        <path d="M 0,10 Q 5,6 10,10 T 20,10" fill="none" stroke="#D3E0D2" strokeWidth="1" opacity="0.6" />
+                        <path d="M 0,10 Q 5,6 10,10 T 20,10" fill="none" stroke="#B6A89C" strokeWidth="1" opacity="0.6" />
                       </pattern>
                       <linearGradient id="arabianSeaGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#EAF1E9" stopOpacity="0.8" />
-                        <stop offset="100%" stopColor="#F5EBDD" stopOpacity="0" />
+                        <stop offset="0%" stopColor="#F2EAE0" stopOpacity="0.8" />
+                        <stop offset="100%" stopColor="#F8F2EA" stopOpacity="0" />
                       </linearGradient>
                       <linearGradient id="harbourGrad" x1="100%" y1="0%" x2="0%" y2="0%">
-                        <stop offset="0%" stopColor="#E8EEEC" stopOpacity="0.7" />
-                        <stop offset="100%" stopColor="#F5EBDD" stopOpacity="0" />
+                        <stop offset="0%" stopColor="#F0E6DD" stopOpacity="0.7" />
+                        <stop offset="100%" stopColor="#F8F2EA" stopOpacity="0" />
                       </linearGradient>
                     </defs>
 
@@ -492,7 +497,22 @@ export default function LibrariesPage() {
             {activeBranch && (
               <div className="active-branch-detail-panel">
                 <div>
-                  <div className="active-panel-top">
+                  {/* Top Architectural Illustration Media */}
+                  <div className="lib-card-media active-panel-media">
+                    <img
+                      src={activeBranch.image || LIBRARY_IMAGES[activeBranch.id] || '/images/libraries/david-sassoon.jpg'}
+                      alt={activeBranch.cardName || LIBRARY_CARD_NAMES[activeBranch.id] || activeBranch.name}
+                      className="lib-card-img"
+                    />
+                    <div className="lib-media-overlay" />
+                    <span className="lib-badge-illustrative">
+                      <Sparkles size={11} className="badge-sparkle-icon" />
+                      <span>AI-Generated Illustration</span>
+                    </span>
+                  </div>
+
+                  <div className="active-panel-inner-body">
+                    <div className="active-panel-top">
                     <span className={`active-branch-badge ${activeBranch.isVerified ? 'badge-verified-gold' : 'badge-demo'}`}>
                       {activeBranch.isVerified ? '✓ ' + activeBranch.verificationStatus : 'Demonstration Record'}
                     </span>
@@ -580,6 +600,7 @@ export default function LibrariesPage() {
                     </div>
                   </div>
                 </div>
+              </div>
 
                 <div className="active-branch-actions">
                   <a
@@ -618,144 +639,173 @@ export default function LibrariesPage() {
         {/* View Mode 2: Branch Cards Grid */}
         {viewMode === 'grid' && (
           <div className="libraries-grid">
-            {filteredLibraries.map((lib) => (
-              <div key={lib.id} className="library-branch-card indian-library-card">
-                {/* Botanical Corner Accent */}
-                <div className="branch-corner-flourish" aria-hidden="true">❦</div>
+            {filteredLibraries.map((lib) => {
+              const cardImage = lib.image || LIBRARY_IMAGES[lib.id] || '/images/libraries/david-sassoon.jpg';
+              const cardName = lib.cardName || LIBRARY_CARD_NAMES[lib.id] || lib.name;
+              const locationStr = lib.locationDisplay || LIBRARY_LOCATIONS[lib.id] || `${lib.locality || lib.area}, Mumbai, Maharashtra`;
+              const descriptionStr = lib.description || LIBRARY_DESCRIPTIONS[lib.id] || lib.accessNote || '';
 
-                <div className="lib-card-top">
-                  <div className="lib-name-block">
-                    <div className="lib-header-badges">
-                      {lib.isFlagship && <span className="flagship-badge">Mumbai Landmark</span>}
-                      {lib.isVerified ? (
-                        <span className="verified-badge-pill">
-                          <ShieldCheck size={12} /> {lib.verificationStatus}
-                        </span>
-                      ) : (
-                        <span className="sample-badge">Demonstration Profile</span>
-                      )}
-                    </div>
-                    <h3 className="library-card-title">{lib.name}</h3>
-                    <span className="lib-neighborhood">
-                      {lib.locality} • {lib.region}
+              return (
+                <div key={lib.id} className="library-branch-card indian-library-card">
+                  {/* Large Architectural Illustration Top Media */}
+                  <div className="lib-card-media">
+                    <img
+                      src={cardImage}
+                      alt={cardName}
+                      className="lib-card-img"
+                      loading="lazy"
+                    />
+                    <div className="lib-media-overlay" />
+                    <span className="lib-badge-illustrative">
+                      <Sparkles size={11} className="badge-sparkle-icon" />
+                      <span>AI-Generated Illustration</span>
                     </span>
                   </div>
-                  {lib.establishedYear && (
-                    <span className="lib-distance-pill">Est. {lib.establishedYear}</span>
-                  )}
-                </div>
 
-                {/* Branch Information with Indian Context */}
-                <div className="lib-info-block">
-                  <div className="lib-info-row">
-                    <MapPin size={16} className="lib-info-icon" />
-                    <span className="lib-address-text">{lib.address}</span>
-                  </div>
-
-                  {lib.nearestTransit && (
-                    <div className="lib-info-row transit-highlight-row">
-                      <Train size={15} className="lib-info-icon transit-icon" />
-                      <span className="lib-transit-text">{lib.nearestTransit}</span>
+                  <div className="lib-card-body">
+                    <div className="lib-card-top">
+                      <div className="lib-name-block">
+                        <div className="lib-header-badges">
+                          {lib.isFlagship && <span className="flagship-badge">Mumbai Landmark</span>}
+                          {lib.isVerified ? (
+                            <span className="verified-badge-pill">
+                              <ShieldCheck size={12} /> {lib.verificationStatus}
+                            </span>
+                          ) : (
+                            <span className="sample-badge">Demonstration Profile</span>
+                          )}
+                        </div>
+                        <h3 className="library-card-title">{cardName}</h3>
+                        <span className="lib-neighborhood">
+                          <MapPin size={13} className="lib-location-pin-icon" />
+                          <span>{locationStr}</span>
+                        </span>
+                      </div>
+                      {lib.establishedYear && (
+                        <span className="lib-distance-pill">Est. {lib.establishedYear}</span>
+                      )}
                     </div>
-                  )}
 
-                  <div className="lib-info-row">
-                    <Clock size={16} className="lib-info-icon" />
-                    <div className="hours-block">
-                      <span className="hours-main">{lib.hours?.weekdays}</span>
-                      <span className="hours-sub">
-                        {lib.hours?.saturday}
-                        {lib.hours?.sunday ? ` • ${lib.hours.sunday}` : ''}
-                      </span>
+                    {/* Architectural Description in Walnut */}
+                    {descriptionStr && (
+                      <p className="lib-card-description">
+                        {descriptionStr}
+                      </p>
+                    )}
+
+                    {/* Branch Information with Indian Context */}
+                    <div className="lib-info-block">
+                      <div className="lib-info-row">
+                        <MapPin size={16} className="lib-info-icon" />
+                        <span className="lib-address-text">{lib.address}</span>
+                      </div>
+
+                      {lib.nearestTransit && (
+                        <div className="lib-info-row transit-highlight-row">
+                          <Train size={15} className="lib-info-icon transit-icon" />
+                          <span className="lib-transit-text">{lib.nearestTransit}</span>
+                        </div>
+                      )}
+
+                      <div className="lib-info-row">
+                        <Clock size={16} className="lib-info-icon" />
+                        <div className="hours-block">
+                          <span className="hours-main">{lib.hours?.weekdays}</span>
+                          <span className="hours-sub">
+                            {lib.hours?.saturday}
+                            {lib.hours?.sunday ? ` • ${lib.hours.sunday}` : ''}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="lib-info-row">
+                        <Phone size={16} className="lib-info-icon" />
+                        <a href={`tel:${lib.phone}`} className="lib-contact-link">
+                          {lib.phone}
+                        </a>
+                      </div>
+
+                      {lib.email && (
+                        <div className="lib-info-row">
+                          <Mail size={16} className="lib-info-icon" />
+                          <a href={`mailto:${lib.email}`} className="lib-contact-link">
+                            {lib.email}
+                          </a>
+                        </div>
+                      )}
+
+                      {lib.supervisor && (
+                        <div className="lib-info-row">
+                          <User size={16} className="lib-info-icon" />
+                          <span className="lib-contact-text">In-Charge: {lib.supervisor}</span>
+                        </div>
+                      )}
                     </div>
-                  </div>
 
-                  <div className="lib-info-row">
-                    <Phone size={16} className="lib-info-icon" />
-                    <a href={`tel:${lib.phone}`} className="lib-contact-link">
-                      {lib.phone}
-                    </a>
-                  </div>
+                    {/* Access and Membership Notice */}
+                    {lib.accessNote && (
+                      <div className="lib-access-note-box">
+                        <span className="access-note-title">Admission & Access:</span>
+                        <p className="access-note-body">{lib.accessNote}</p>
+                      </div>
+                    )}
 
-                  {lib.email && (
-                    <div className="lib-info-row">
-                      <Mail size={16} className="lib-info-icon" />
-                      <a href={`mailto:${lib.email}`} className="lib-contact-link">
-                        {lib.email}
+                    {/* Amenities */}
+                    <div className="lib-services-block">
+                      <h4 className="lib-section-subhead">Facilities & Collections:</h4>
+                      <div className="lib-amenities-tags">
+                        {lib.services?.map((srv, sIdx) => (
+                          <span key={sIdx} className="amenity-tag-item">
+                            <Check size={11} className="tag-check" />
+                            {srv}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Accessibility */}
+                    {lib.accessibility && lib.accessibility.length > 0 && (
+                      <div className="lib-access-block">
+                        <span className="access-label">Accessibility:</span>
+                        <span className="access-list">{lib.accessibility.join(' • ')}</span>
+                      </div>
+                    )}
+
+                    {/* Card Footer Actions in Burgundy (#6B1E2B) */}
+                    <div className="lib-card-footer">
+                      <button
+                        type="button"
+                        className="lib-btn-primary"
+                        onClick={() => handleCardViewOnMap(lib.id)}
+                        title="View on Interactive Map"
+                      >
+                        <Compass size={14} />
+                        <span>View on Map</span>
+                      </button>
+                      <a
+                        href={getMapLink(lib)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="lib-btn-secondary"
+                        title="Open in Google Maps / Navigation"
+                      >
+                        <Navigation size={14} />
+                        <span>Directions</span>
+                        <ExternalLink size={12} />
+                      </a>
+                      <a
+                        href={`tel:${lib.phone}`}
+                        className="lib-btn-tertiary"
+                        title="Call Library Desk"
+                      >
+                        <Phone size={14} />
+                        <span>Call</span>
                       </a>
                     </div>
-                  )}
-
-                  {lib.supervisor && (
-                    <div className="lib-info-row">
-                      <User size={16} className="lib-info-icon" />
-                      <span className="lib-contact-text">In-Charge: {lib.supervisor}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Access and Membership Notice */}
-                {lib.accessNote && (
-                  <div className="lib-access-note-box">
-                    <span className="access-note-title">Admission & Access:</span>
-                    <p className="access-note-body">{lib.accessNote}</p>
-                  </div>
-                )}
-
-                {/* Amenities */}
-                <div className="lib-services-block">
-                  <h4 className="lib-section-subhead">Facilities & Collections:</h4>
-                  <div className="lib-amenities-tags">
-                    {lib.services?.map((srv, sIdx) => (
-                      <span key={sIdx} className="amenity-tag-item">
-                        <Check size={11} className="tag-check" />
-                        {srv}
-                      </span>
-                    ))}
                   </div>
                 </div>
-
-                {/* Accessibility */}
-                {lib.accessibility && lib.accessibility.length > 0 && (
-                  <div className="lib-access-block">
-                    <span className="access-label">Accessibility:</span>
-                    <span className="access-list">{lib.accessibility.join(' • ')}</span>
-                  </div>
-                )}
-
-                {/* Card Footer Actions in Forest Green (#355442) */}
-                <div className="lib-card-footer">
-                  <button
-                    type="button"
-                    className="lib-btn-primary"
-                    onClick={() => handleCardViewOnMap(lib.id)}
-                    title="View on Interactive Map"
-                  >
-                    <Compass size={14} />
-                    <span>View on Map</span>
-                  </button>
-                  <a
-                    href={getMapLink(lib)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="lib-btn-secondary"
-                    title="Open in Google Maps / Navigation"
-                  >
-                    <Navigation size={14} />
-                    <span>Directions</span>
-                    <ExternalLink size={12} />
-                  </a>
-                  <a
-                    href={`tel:${lib.phone}`}
-                    className="lib-btn-tertiary"
-                    title="Call Library Desk"
-                  >
-                    <Phone size={14} />
-                    <span>Call</span>
-                  </a>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 

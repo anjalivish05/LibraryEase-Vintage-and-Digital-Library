@@ -69,15 +69,30 @@ def get_current_user(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User account not found",
         )
+    if not getattr(user, "is_active", True):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your account has been deactivated. Please contact library administration.",
+        )
     return user
 
 def get_current_librarian(
     current_user: models.User = Depends(get_current_user)
 ) -> models.User:
-    if current_user.role != "librarian":
+    if current_user.role not in ("librarian", "admin"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Librarian/Administrative access privileges required",
+        )
+    return current_user
+
+def get_current_admin(
+    current_user: models.User = Depends(get_current_user)
+) -> models.User:
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Administrator access privileges required",
         )
     return current_user
 

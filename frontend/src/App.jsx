@@ -14,6 +14,9 @@ import AuthModal from './components/AuthModal';
 import NotificationDrawer from './components/NotificationDrawer';
 import LibrarianDashboard from './components/LibrarianDashboard';
 import RequestBookModal from './components/RequestBookModal';
+import AdminLoginPage from './components/admin/AdminLoginPage';
+import AdminPortal from './components/admin/AdminPortal';
+import './components/admin/AdminPortal.css';
 
 import { SAMPLE_BOOKS } from './data/booksData';
 import { INITIAL_BORROWED_BOOKS } from './data/myLibraryData';
@@ -68,8 +71,22 @@ export default function App() {
   // Sync with URL hash if present
   useEffect(() => {
     const handleHashChange = () => {
+      const pathname = window.location.pathname;
+      if (pathname === '/admin/login') {
+        setActivePage('admin-login');
+        return;
+      }
+      if (pathname === '/admin') {
+        setActivePage('admin');
+        return;
+      }
+
       const hash = window.location.hash.replace('#', '').trim();
-      const validPages = ['home', 'explore', 'libraries', 'services', 'about', 'my-library', 'ai-assistant', 'feedback', 'librarian'];
+      const validPages = [
+        'home', 'explore', 'libraries', 'services', 'about', 
+        'my-library', 'ai-assistant', 'feedback', 'librarian', 
+        'admin', 'admin-login'
+      ];
       if (validPages.includes(hash)) {
         setActivePage(hash);
       }
@@ -118,6 +135,14 @@ export default function App() {
       librarian: {
         title: 'Librarian Management Portal | LibraryEase',
         desc: 'Librarian administrative dashboard for circulation management, book returns, and community requests.'
+      },
+      'admin-login': {
+        title: 'Administrator Sign In | LibraryEase Platform Administration',
+        desc: 'Restricted administrative authentication for LibraryEase platform administrators.'
+      },
+      admin: {
+        title: 'Admin Portal & Platform Governance | LibraryEase',
+        desc: 'Centralized administrator dashboard for library branches, book catalog inventory, and user account management.'
       }
     };
 
@@ -151,7 +176,7 @@ export default function App() {
           availability: b.available_copies > 0 ? 'Available on Shelf' : 'On Loan / Reserved',
           copiesAvailable: b.available_copies,
           totalCopies: b.total_copies,
-          coverBg: 'linear-gradient(135deg, #1b3a32 0%, #2e5c4d 100%)',
+          coverBg: 'linear-gradient(135deg, #6B1E2B 0%, #5C4033 100%)',
           badge: b.available_copies > 0 ? 'In Circulation' : 'Reserved',
           featured: true,
           description: b.description,
@@ -225,6 +250,19 @@ export default function App() {
   useEffect(() => {
     syncUserData();
   }, [syncUserData]);
+
+
+  // Route Guard for Admin Portal (#admin)
+  useEffect(() => {
+    if (activePage === 'admin') {
+      const stored = api.getStoredUser();
+      if (!stored || stored.role !== 'admin') {
+        setActivePage('admin-login');
+        window.location.hash = 'admin-login';
+        showToast('Administrative privileges required. Please sign in as an Administrator.');
+      }
+    }
+  }, [activePage, currentUser]);
 
   const handleNavigate = (pageId) => {
     setActivePage(pageId);
@@ -478,19 +516,21 @@ export default function App() {
         </div>
       )}
 
-      {/* Main Top Navigation */}
-      <Navbar 
-        activePage={activePage} 
-        setActivePage={handleNavigate} 
-        borrowedCount={borrowedBooks.length}
-        unreadNotifications={unreadNotifsCount}
-        currentUser={currentUser}
-        onOpenNotifications={() => setIsNotifDrawerOpen(true)}
-        onOpenAuth={() => setIsAuthModalOpen(true)}
-      />
+      {/* Main Top Navigation - Hide when in dedicated Admin Portal */}
+      {activePage !== 'admin' && activePage !== 'admin-login' && (
+        <Navbar 
+          activePage={activePage} 
+          setActivePage={handleNavigate} 
+          borrowedCount={borrowedBooks.length}
+          unreadNotifications={unreadNotifsCount}
+          currentUser={currentUser}
+          onOpenNotifications={() => setIsNotifDrawerOpen(true)}
+          onOpenAuth={() => setIsAuthModalOpen(true)}
+        />
+      )}
 
       {/* Main Page Content */}
-      <main className="main-content-area" id="main-content">
+      <main className={`main-content-area ${activePage === 'admin' || activePage === 'admin-login' ? 'admin-layout-override' : ''}`} id="main-content">
         {activePage === 'home' && (
           <HomePage
             books={books}
@@ -569,6 +609,29 @@ export default function App() {
             onCatalogChanged={fetchCatalog}
           />
         )}
+
+        {/* Dedicated Admin Login View */}
+        {activePage === 'admin-login' && (
+          <AdminLoginPage
+            onAdminLoginSuccess={(adminUser) => {
+              setCurrentUser(adminUser);
+              handleNavigate('admin');
+              showToast(`Welcome back, ${adminUser.full_name}. Admin session initialized.`);
+            }}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {/* Dedicated Admin Portal */}
+        {activePage === 'admin' && (
+          <AdminPortal
+            currentUser={currentUser}
+            onLogout={handleLogout}
+            onNavigate={handleNavigate}
+            onShowToast={showToast}
+            onCatalogChanged={fetchCatalog}
+          />
+        )}
       </main>
 
       {/* Request a Book Modal */}
@@ -613,8 +676,10 @@ export default function App() {
         isRefreshing={isRefreshingNotifs}
       />
 
-      {/* Footer */}
-      <Footer onNavigate={handleNavigate} />
+      {/* Footer - Render only on public pages */}
+      {activePage !== 'admin' && activePage !== 'admin-login' && (
+        <Footer onNavigate={handleNavigate} />
+      )}
     </div>
   );
 }

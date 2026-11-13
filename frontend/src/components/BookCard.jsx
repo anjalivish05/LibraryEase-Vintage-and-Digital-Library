@@ -9,7 +9,7 @@ export default function BookCard({ book, onSelectBook, onBorrowToggle, isBorrowe
       {/* Prominent Book Cover Representation */}
       <div 
         className="book-cover-stage" 
-        style={{ background: book.coverBg || 'linear-gradient(135deg, #355442 0%, #253D30 100%)' }}
+        style={{ background: book.coverBg || 'linear-gradient(135deg, #6B1E2B 0%, #5C4033 100%)' }}
         onClick={() => onSelectBook(book)}
       >
         <div className="book-spine-ridge" />
@@ -65,7 +65,7 @@ export default function BookCard({ book, onSelectBook, onBorrowToggle, isBorrowe
           <span>{book.shelfLocation}</span>
         </div>
 
-        {/* Availability Badge: Uses Muted Sage (#9BAF98) for available */}
+        {/* Availability Badge: Uses Bronze (#B68A4C) and Green live status dot */}
         <div className="book-status-row">
           <span className={`status-badge ${isAvailable ? 'status-sage-available' : 'status-on-loan'}`}>
             <span className="status-dot" />

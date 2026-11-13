@@ -1,60 +1,111 @@
 /* ==========================================================================
-   LibraryEase — Vintage Library + Modern AI Design System
-   Exact Specified Palette:
-   • Antique Cream: #F5EBDD
-   • Parchment: #E7D6B8
-   • Forest Green: #355442
-   • Muted Sage: #9BAF98
-   • Dusty Lavender: #C7B9D8
-   • Ink Charcoal: #302D27
-   • Pure White: #FFFFFF
+   LibraryEase — Antique Brocade Design System
+   Exact Canonical 5-Colour Palette:
+   1. Burgundy:   #6B1E2B  (Primary actions, important headings, active nav, selected states)
+   2. Bronze:     #B68A4C  (Decorative borders, icons, separators, badges, small highlights)
+   3. Cream:      #F8F2EA  (Dominant background for pages, content sections, large surfaces)
+   4. Walnut:     #5C4033  (Footer, bookshelf, dark feature sections, dark cards)
+   5. Soft Taupe: #B6A89C  (Secondary cards, input backgrounds/borders, subtle borders, filters)
    ========================================================================== */
 
 :root {
-  /* Exact Primary Palette */
-  --color-antique-cream: #F5EBDD;
-  --color-parchment: #E7D6B8;
-  --color-parchment-light: #F0E3CB;
-  --color-forest-green: #355442;
-  --color-forest-green-dark: #253D30;
-  --color-forest-green-light: #446953;
-  --color-muted-sage: #9BAF98;
-  --color-muted-sage-light: #EBF1EA;
-  --color-muted-sage-border: #889F85;
-  --color-dusty-lavender: #C7B9D8;
-  --color-dusty-lavender-light: #F4EFF8;
-  --color-dusty-lavender-dark: #58446E;
-  --color-ink-charcoal: #302D27;
-  --color-ink-muted: #625B50;
-  --color-ink-subtle: #877F71;
+  /* --------------------------------------------------------------------------
+     The Five Official Antique Brocade Design Tokens
+     -------------------------------------------------------------------------- */
+  --color-burgundy: #6B1E2B;
+  --color-bronze: #B68A4C;
+  --color-cream: #F8F2EA;
+  --color-walnut: #5C4033;
+  --color-soft-taupe: #B6A89C;
+
+  /* --------------------------------------------------------------------------
+     Semantic Role Mappings
+     -------------------------------------------------------------------------- */
+  --color-primary: #6B1E2B;             /* Burgundy: Primary buttons, important headings */
+  --color-primary-dark: #4A151E;        /* Deep Burgundy shade */
+  --color-primary-hover: #541722;
+  --color-accent: #B68A4C;              /* Bronze: Decorative borders, icons, accents */
+  --color-accent-light: #CFA66E;        /* Light Bronze highlight */
+  --color-background: #F8F2EA;          /* Cream: Dominant page & surface background */
+  --color-surface: #FFFDF8;             /* Clean cream card surface */
+  --color-surface-cream: #F8F2EA;
+  --color-surface-taupe: #ECE5DE;       /* Soft Taupe light tint for secondary cards */
+  --color-surface-walnut: #5C4033;      /* Walnut dark surface */
+  --color-card-dark: #5C4033;           /* Walnut */
+
+  --color-text: #2B1E1A;                /* Deep Charcoal/Walnut Ink: High contrast on Cream */
+  --color-text-main: #2B1E1A;
+  --color-text-muted: #5C4033;          /* Walnut: Secondary text */
+  --color-text-inverse: #F8F2EA;        /* Cream text for dark Walnut/Burgundy backgrounds */
+
+  --color-border: #B6A89C;              /* Soft Taupe: Subtle borders */
+  --color-border-subtle: #D8CEC5;
+  --color-border-card: #B6A89C;
+  --color-border-parchment: #B6A89C;
+  --color-border-bronze: #B68A4C;       /* Bronze: Decorative borders */
+  --color-border-gold: rgba(182, 138, 76, 0.4);
+  --color-border-walnut: #5C4033;
+
+  --color-highlight: #ECE5DE;           /* Soft Taupe tint */
+
+  /* --------------------------------------------------------------------------
+     Component Compatibility & Legacy Aliases
+     -------------------------------------------------------------------------- */
+  --color-primary-burgundy: #6B1E2B;
+  --color-primary-burgundy-light: #852938;
+  --color-deep-wine: #5C4033;           /* Walnut */
+  --color-warm-ivory: #F8F2EA;          /* Cream */
+  --color-soft-cream: #FFFDF8;
+  --color-antique-gold: #B68A4C;        /* Bronze */
+  --color-antique-cream: #F8F2EA;       /* Cream */
+  --color-parchment: #B6A89C;           /* Soft Taupe */
+  --color-parchment-border: #B6A89C;
+  --color-parchment-light: #F2ECE4;
+  --color-forest-green: #6B1E2B;        /* Mapped to Burgundy */
+  --color-forest-green-dark: #5C4033;   /* Mapped to Walnut */
+  --color-forest-green-light: #852938;
+  --color-muted-sage: #B68A4C;          /* Mapped to Bronze */
+  --color-muted-sage-light: #ECE5DE;    /* Soft Taupe */
+  --color-muted-sage-border: #B6A89C;
+  --color-dusty-rose: #B6A89C;          /* Soft Taupe */
+  --color-dusty-rose-light: #ECE5DE;
+  --color-dusty-rose-dark: #5C4033;
+  --color-dusty-lavender: #ECE5DE;
+  --color-dusty-lavender-light: #F4EFEB;
+  --color-dusty-lavender-dark: #5C4033;
+  --color-ink-charcoal: #2B1E1A;
+  --color-ink-muted: #5C4033;
+  --color-ink-subtle: #7A6961;
+  --color-dark-brown: #2B1E1A;
+  --color-brown-muted: #5C4033;
+  --color-brown-subtle: #7A6961;
   --color-pure-white: #FFFFFF;
 
-  /* Surfaces & Structures */
-  --color-bg-page: #F5EBDD; /* Antique cream main background */
-  --color-bg-surface: #FFFFFF; /* Pure white card surface */
-  --color-bg-cream: #F5EBDD;
-  --color-bg-parchment: #E7D6B8;
-  --color-bg-sage: #EBF1EA;
-  --color-bg-lavender: #F4EFF8;
-
-  --color-text-main: #302D27; /* Ink Charcoal */
-  --color-text-muted: #625B50;
-  --color-text-inverse: #FFFFFF;
-
-  --color-border-card: #E4D4B6;
-  --color-border-parchment: #E7D6B8;
-  --color-border-subtle: #EEE2CF;
+  /* Surfaces & Structural Roles */
+  --color-bg-page: #F8F2EA;             /* Cream */
+  --color-bg-surface: #FFFDF8;
+  --color-bg-cream: #F8F2EA;
+  --color-bg-parchment: #ECE5DE;
+  --color-bg-sage: #ECE5DE;
+  --color-bg-lavender: #ECE5DE;
+  --color-bg-wine: #5C4033;             /* Walnut */
+  --color-bg-walnut: #5C4033;
+  --color-bg-burgundy: #6B1E2B;
+  --color-bg-bronze: #B68A4C;
+  --color-bg-taupe: #B6A89C;
 
   /* Typography */
-  --font-serif: 'Lora', 'Playfair Display', Georgia, serif;
+  --font-serif: 'Playfair Display', 'Lora', Georgia, serif;
   --font-display: 'Playfair Display', 'Lora', Georgia, serif;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   /* Tactile Shadows */
-  --shadow-sm: 0 1px 3px rgba(48, 45, 39, 0.06), 0 1px 2px rgba(48, 45, 39, 0.04);
-  --shadow-card: 0 4px 16px -2px rgba(48, 45, 39, 0.07), 0 2px 5px -1px rgba(48, 45, 39, 0.03);
-  --shadow-hover: 0 12px 28px -4px rgba(48, 45, 39, 0.12), 0 4px 10px -2px rgba(48, 45, 39, 0.05);
-  --shadow-lavender: 0 4px 16px rgba(199, 185, 216, 0.35);
+  --shadow-sm: 0 1px 3px rgba(43, 30, 26, 0.06), 0 1px 2px rgba(43, 30, 26, 0.04);
+  --shadow-card: 0 4px 16px -2px rgba(43, 30, 26, 0.08), 0 2px 5px -1px rgba(43, 30, 26, 0.04);
+  --shadow-hover: 0 12px 28px -4px rgba(43, 30, 26, 0.14), 0 4px 10px -2px rgba(43, 30, 26, 0.06);
+  --shadow-bronze: 0 4px 16px rgba(182, 138, 76, 0.28);
+  --shadow-burgundy: 0 4px 16px rgba(107, 30, 43, 0.28);
+  --shadow-walnut: 0 6px 20px rgba(92, 64, 51, 0.35);
 
   --radius-xs: 4px;
   --radius-sm: 6px;
@@ -108,7 +159,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
-  color: var(--color-ink-charcoal);
+  color: var(--color-text-main);
   line-height: 1.25;
 }
 
@@ -132,11 +183,5 @@ input, select, textarea {
   width: 100%;
   max-width: 1240px;
   margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-@media (max-width: 640px) {
-  .container {
-    padding: 0 1rem;
-  }
+  padding: 0 20px;
 }

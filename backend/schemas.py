@@ -26,6 +26,7 @@ class UserResponse(BaseModel):
     role: str
     phone: Optional[str]
     member_card_no: str
+    is_active: bool = True
     created_at: datetime
 
     class Config:
@@ -339,9 +340,11 @@ class LibraryBase(BaseModel):
     mapPosition: LibraryMapPosition
     coordinates: Optional[LibraryCoordinates] = None
     mapSearchQuery: Optional[str] = None
+    description: Optional[str] = None
+    is_active: Optional[bool] = True
 
 class LibraryCreate(LibraryBase):
-    id: str
+    id: Optional[str] = None
 
 class LibraryUpdate(BaseModel):
     name: Optional[str] = None
@@ -360,3 +363,21 @@ class LibraryUpdate(BaseModel):
 class LibraryResponse(LibraryBase):
     id: str
 
+
+
+class UserStatusUpdate(BaseModel):
+    is_active: bool
+
+class AdminDashboardStats(BaseModel):
+    total_libraries: int
+    total_books: int
+    total_copies: int
+    registered_users: int
+    active_borrowings: int
+    overdue_borrowings: int
+    pending_book_requests: int
+    pending_feedback: int
+    recent_books: List[dict] = []
+    recent_libraries: List[dict] = []
+    recent_activities: List[dict] = []
+    category_distribution: List[dict] = []

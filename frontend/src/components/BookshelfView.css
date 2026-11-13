@@ -1,0 +1,572 @@
+/* ==========================================================================
+   LibraryEase — Realistic Wooden Bookshelf View Styles
+   Transforms book browsing into an immersive physical library experience
+   ========================================================================== */
+
+.bookshelf-experience-container {
+  position: relative;
+  width: 100%;
+  margin: 16px 0 40px;
+  perspective: 1200px;
+}
+
+/* Atmospheric Library Room Backdrop */
+.bookshelf-room-backdrop {
+  background: 
+    radial-gradient(ellipse at 50% 15%, rgba(226, 184, 116, 0.14) 0%, rgba(18, 10, 6, 0.9) 75%),
+    linear-gradient(180deg, #1C0F0A 0%, #120A06 100%);
+  border: 12px solid #2B160C;
+  border-radius: 16px;
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.75), 
+    inset 0 0 120px rgba(0, 0, 0, 0.85),
+    0 0 0 2px rgba(184, 149, 85, 0.35);
+  padding: 28px 24px 36px;
+  position: relative;
+  overflow: visible;
+}
+
+/* Wooden Case Fluted Side Pillars */
+.bookshelf-room-backdrop::before,
+.bookshelf-room-backdrop::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 18px;
+  background: linear-gradient(90deg, #381E10 0%, #522C18 35%, #2A150B 70%, #1A0D07 100%);
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.1), inset -1px 0 0 rgba(0, 0, 0, 0.5);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.bookshelf-room-backdrop::before {
+  left: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+.bookshelf-room-backdrop::after {
+  right: 0;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Bookshelf Top Crown Header */
+.bookshelf-crown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding: 0 10px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.bookshelf-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bookshelf-crest-emblem {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #5C4033 0%, #2A1119 100%);
+  border: 1.5px solid #B68A4C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #B68A4C;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.bookshelf-heading {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: #F8F2EA;
+  margin: 0;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.bookshelf-subheading {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.76rem;
+  color: #B68A4C;
+  margin: 3px 0 0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* Hint Pill */
+.bookshelf-hint-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(92, 64, 51, 0.85);
+  border: 1px solid rgba(182, 138, 76, 0.6);
+  color: #FFFDF8;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.hint-sparkle {
+  color: #B68A4C;
+  animation: pulseLight 2s infinite ease-in-out;
+}
+
+@keyframes pulseLight {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+/* --------------------------------------------------------------------------
+   Individual Bookshelf Tier
+   -------------------------------------------------------------------------- */
+.shelf-tier {
+  position: relative;
+  margin-bottom: 40px;
+  padding: 0 12px;
+}
+
+.shelf-tier:last-child {
+  margin-bottom: 8px;
+}
+
+/* Engraved Brass Nameplate Plaque */
+.shelf-brass-plaque-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 5;
+}
+
+.shelf-brass-plaque {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #ECC87A 0%, #C49746 45%, #8C6622 100%);
+  color: #241403;
+  padding: 5px 22px;
+  border-radius: 4px;
+  border: 1px solid #735118;
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.6), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  position: relative;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.plaque-screw {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #52370D;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.plaque-text {
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.plaque-count {
+  font-size: 0.65rem;
+  background: rgba(36, 20, 3, 0.15);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+/* The Wooden Shelf Surface / Row of Books */
+.shelf-books-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 3px;
+  padding: 85px 16px 2px;
+  min-height: 290px;
+  position: relative;
+  z-index: 4;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: thin;
+  scrollbar-color: #5C321E rgba(0, 0, 0, 0.3);
+}
+
+.shelf-books-row::-webkit-scrollbar {
+  height: 6px;
+}
+
+.shelf-books-row::-webkit-scrollbar-thumb {
+  background: #5C321E;
+  border-radius: 4px;
+}
+
+/* Polished Mahogany Wooden Plank Base */
+.shelf-wooden-plank {
+  height: 28px;
+  background: linear-gradient(180deg, #6B3B24 0%, #4A2716 35%, #2E170B 85%, #1F0F06 100%);
+  border-radius: 2px;
+  box-shadow: 
+    0 10px 24px rgba(0, 0, 0, 0.8), 
+    inset 0 2px 1px rgba(255, 255, 255, 0.25), 
+    inset 0 -2px 2px rgba(0, 0, 0, 0.6);
+  position: relative;
+  margin-top: -2px;
+  z-index: 3;
+}
+
+.shelf-wooden-plank::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -10px;
+  height: 10px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Bookend Metal Props */
+.shelf-bookend {
+  width: 14px;
+  height: 140px;
+  background: linear-gradient(90deg, #2D1A0F 0%, #6E442B 40%, #3D2213 100%);
+  border-radius: 4px 4px 0 0;
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.2), 2px 0 6px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+}
+
+.shelf-bookend.right {
+  margin-left: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Physical Book Item (Realistic 3D Standing Spine)
+   -------------------------------------------------------------------------- */
+.physical-book-spine {
+  position: relative;
+  cursor: pointer;
+  transform-origin: bottom center;
+  transition: transform 0.25s cubic-bezier(0.2, 1, 0.3, 1), box-shadow 0.25s ease, filter 0.25s ease;
+  user-select: none;
+  flex-shrink: 0;
+  border-radius: 4px 2px 0 0;
+}
+
+/* Normal Standing Spine Appearance */
+.spine-outer-wrap {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px 2px 0 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    -2px 0 5px rgba(0, 0, 0, 0.45), 
+    inset -3px 0 8px rgba(0, 0, 0, 0.4), 
+    inset 2px 0 4px rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 4px;
+}
+
+/* Distinct Vintage Book Colors */
+.physical-book-spine.color-burgundy .spine-outer-wrap {
+  background: linear-gradient(90deg, #4A121E 0%, #751E32 30%, #5C1626 70%, #3B0E17 100%);
+}
+
+.physical-book-spine.color-emerald .spine-outer-wrap {
+  background: linear-gradient(90deg, #0F2E22 0%, #1F523E 30%, #174231 70%, #0D261C 100%);
+}
+
+.physical-book-spine.color-navy .spine-outer-wrap {
+  background: linear-gradient(90deg, #101B2B 0%, #203654 30%, #192C44 70%, #0D1624 100%);
+}
+
+.physical-book-spine.color-parchment .spine-outer-wrap {
+  background: linear-gradient(90deg, #6B5438 0%, #9C7D57 30%, #826643 70%, #57432B 100%);
+}
+
+.physical-book-spine.color-plum .spine-outer-wrap {
+  background: linear-gradient(90deg, #2E1233 0%, #4E2157 30%, #3D1844 70%, #240E29 100%);
+}
+
+.physical-book-spine.color-caramel .spine-outer-wrap {
+  background: linear-gradient(90deg, #4F2E14 0%, #7A4922 30%, #633A19 70%, #3B210D 100%);
+}
+
+.physical-book-spine.color-teal .spine-outer-wrap {
+  background: linear-gradient(90deg, #132E33 0%, #225159 30%, #193E45 70%, #0F2326 100%);
+}
+
+/* Embossed Gold Horizontal Ribs on Spine */
+.spine-gold-ribs-top,
+.spine-gold-ribs-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+}
+
+.spine-rib-line {
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #D4AF37 30%, #F5DE98 50%, #D4AF37 70%, transparent 100%);
+  opacity: 0.85;
+}
+
+/* Vertical Gold-Embossed Title on Spine */
+.spine-title-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.spine-vertical-title {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #F8E8C8;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 130px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 0 1px #FFD700;
+  opacity: 0.95;
+}
+
+.spine-author-code {
+  font-family: 'Inter', monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #D4AF37;
+  text-align: center;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
+
+/* Top Spine Book Pages Texture */
+.spine-top-pages {
+  position: absolute;
+  top: 0;
+  left: 3px;
+  right: 3px;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, #EADBC8, #EADBC8 1px, #D4C0A8 1px, #D4C0A8 2px);
+  border-radius: 2px 2px 0 0;
+  opacity: 0.7;
+}
+
+/* --------------------------------------------------------------------------
+   "Pull From Shelf" 3D Animation & Active States
+   -------------------------------------------------------------------------- */
+.physical-book-spine:hover,
+.physical-book-spine.is-pulled {
+  transform: translateY(-20px) translateZ(50px) rotateY(-10deg);
+  z-index: 100;
+}
+
+.physical-book-spine:hover .spine-outer-wrap,
+.physical-book-spine.is-pulled .spine-outer-wrap {
+  box-shadow: 
+    -12px 16px 30px rgba(0, 0, 0, 0.85), 
+    0 0 25px rgba(226, 184, 116, 0.4),
+    inset -3px 0 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Dim non-matching books when searching */
+.physical-book-spine.is-dimmed {
+  opacity: 0.28;
+  filter: grayscale(60%) brightness(0.65);
+}
+
+.physical-book-spine.is-highlighted {
+  box-shadow: 0 0 24px rgba(182, 138, 76, 0.9), 0 0 8px rgba(107, 30, 43, 0.6);
+}
+
+/* --------------------------------------------------------------------------
+   Compact Selected-Book Callout Card
+   Positioned above the book so it does NOT hide neighbouring books!
+   -------------------------------------------------------------------------- */
+.shelf-callout-card {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  background: rgba(255, 253, 248, 0.98);
+  border: 1.5px solid #B68A4C;
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75), 0 2px 8px rgba(107, 30, 43, 0.25);
+  z-index: 150;
+  text-align: left;
+  animation: cardFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #2B1E1A;
+  pointer-events: auto;
+}
+
+/* Clamped positions for books near edges */
+.shelf-callout-card.align-left-edge {
+  left: 0;
+  transform: none;
+}
+
+.shelf-callout-card.align-right-edge {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
+/* Pointer Caret pointing down to the pulled volume */
+.shelf-callout-caret {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #B68A4C;
+}
+
+.shelf-callout-caret::after {
+  content: '';
+  position: absolute;
+  bottom: 1px;
+  left: -7px;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 7px solid #FFFDF8;
+}
+
+.shelf-callout-card.align-left-edge .shelf-callout-caret {
+  left: 24px;
+  transform: none;
+}
+
+.shelf-callout-card.align-right-edge .shelf-callout-caret {
+  left: auto;
+  right: 24px;
+  transform: none;
+}
+
+.callout-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #6B1E2B;
+  margin: 0 0 2px;
+  line-height: 1.2;
+  white-space: normal;
+}
+
+.callout-author {
+  font-size: 0.78rem;
+  color: #5C4033;
+  margin: 0 0 8px;
+  white-space: normal;
+}
+
+.callout-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.callout-avail-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(107, 30, 43, 0.12);
+  color: #6B1E2B;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid rgba(107, 30, 43, 0.25);
+}
+
+.callout-shelf-loc {
+  font-size: 0.68rem;
+  color: #8F6830;
+  background: rgba(182, 138, 76, 0.15);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.callout-pull-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  background: #6B1E2B;
+  color: #FFFDF8;
+  border: 1px solid #B68A4C;
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.callout-pull-btn:hover {
+  background: #5C4033;
+  color: #FFFFFF;
+  border-color: #CFA66E;
+}
+
+.callout-preview-link {
+  display: block;
+  text-align: center;
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: #6B1E2B;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.callout-preview-link:hover {
+  text-decoration: underline;
+  color: #B68A4C;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

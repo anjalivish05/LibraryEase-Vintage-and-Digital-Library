@@ -1,4 +1,8 @@
 # Environment & Secret files
+.env*
+*.env*
+backend/.env*
+# Environment & Secret files
 .env
 *.env
 .env.*

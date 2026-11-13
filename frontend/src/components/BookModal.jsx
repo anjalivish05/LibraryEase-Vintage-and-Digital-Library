@@ -29,7 +29,7 @@ export default function BookModal({ book, onClose, onBorrowToggle, isBorrowed })
 
         <div className="modal-content-grid">
           {/* Left Book Display (Vintage Cloth Spine Representation) */}
-          <div className="modal-book-cover-col" style={{ background: book.coverBg || 'linear-gradient(135deg, #355442 0%, #253D30 100%)' }}>
+          <div className="modal-book-cover-col" style={{ background: book.coverBg || 'linear-gradient(135deg, #6B1E2B 0%, #5C4033 100%)' }}>
             <div className="modal-cover-spine" />
             <div className="modal-emboss-frame" />
             <div className="modal-cover-details">

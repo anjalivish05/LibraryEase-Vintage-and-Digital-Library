@@ -175,7 +175,7 @@ export default function FeedbackPage({ currentUser }) {
         <div className="feedback-layout-grid">
           {/* Left Column: Form on Vintage Cream Paper Card */}
           <div className="feedback-form-card">
-            <div className="card-top-flourish">❦ The Patron's Quill</div>
+            <div className="card-top-flourish">The Patron's Quill</div>
 
             {!submittedData ? (
               <>

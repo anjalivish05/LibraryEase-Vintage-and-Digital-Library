@@ -15,7 +15,7 @@ import models
 import schemas
 from security import (
     hash_password, verify_password, create_access_token,
-    get_current_user, get_current_librarian, get_optional_user
+    get_current_user, get_current_librarian, get_current_admin, get_optional_user
 )
 from ai_service import search_books_with_ai, chat_with_ai
 from scheduler import (
@@ -616,14 +616,161 @@ MUMBAI_LIBRARIES_DATA = [
     }
 ]
 
+
+
+LIBRARY_IMAGES_MAP = {
+    "mumbai-lib-1": "/images/libraries/david-sassoon.jpg",
+    "mumbai-lib-2": "/images/libraries/asiatic-society.jpg",
+    "mumbai-lib-3": "/images/libraries/mumbai-marathi.jpg",
+    "mumbai-lib-4": "/images/libraries/jn-petit.jpg",
+    "mumbai-lib-5": "/images/libraries/peoples-reading.jpg",
+    "mumbai-lib-6": "/images/libraries/national-bandra.jpg",
+    "mumbai-lib-7": "/images/libraries/andheri-public.jpg",
+    "mumbai-lib-8": "/images/libraries/goregaon-study.jpg",
+    "mumbai-lib-9": "/images/libraries/borivali-reading.jpg",
+    "mumbai-lib-10": "/images/libraries/powai-knowledge.jpg",
+    "mumbai-lib-11": "/images/libraries/kandivali-malad.jpg",
+    "mumbai-lib-12": "/images/libraries/colaba-heritage.jpg",
+}
+
+LIBRARY_CARD_NAMES_MAP = {
+    "mumbai-lib-1": "David Sassoon Library (Fort)",
+    "mumbai-lib-2": "The Asiatic Society of Mumbai (Fort)",
+    "mumbai-lib-3": "Mumbai Marathi Grantha Sangrahalaya (Dadar)",
+    "mumbai-lib-4": "The J. N. Petit Institute and Library (Fort)",
+    "mumbai-lib-5": "People's Free Reading Room and Library (Marine Lines)",
+    "mumbai-lib-6": "National Library and Reading Room (Bandra)",
+    "mumbai-lib-7": "Andheri Public Reading Hall & Library (Andheri)",
+    "mumbai-lib-8": "Goregaon Study & Community Library (Goregaon)",
+    "mumbai-lib-9": "Borivali Public Reading Space & Library (Borivali)",
+    "mumbai-lib-10": "Powai Knowledge Centre & Community Reading Room (Powai)",
+    "mumbai-lib-11": "Kandivali - Malad Civic Reading Room (Kandivali)",
+    "mumbai-lib-12": "Colaba Heritage Reading Corner (Colaba)",
+}
+
+LIBRARY_LOCATIONS_MAP = {
+    "mumbai-lib-1": "Fort, Mumbai, Maharashtra",
+    "mumbai-lib-2": "Fort, Mumbai, Maharashtra",
+    "mumbai-lib-3": "Dadar, Mumbai, Maharashtra",
+    "mumbai-lib-4": "Fort, Mumbai, Maharashtra",
+    "mumbai-lib-5": "Marine Lines, Mumbai, Maharashtra",
+    "mumbai-lib-6": "Bandra, Mumbai, Maharashtra",
+    "mumbai-lib-7": "Andheri, Mumbai, Maharashtra",
+    "mumbai-lib-8": "Goregaon, Mumbai, Maharashtra",
+    "mumbai-lib-9": "Borivali, Mumbai, Maharashtra",
+    "mumbai-lib-10": "Powai, Mumbai, Maharashtra",
+    "mumbai-lib-11": "Kandivali, Mumbai, Maharashtra",
+    "mumbai-lib-12": "Colaba, Mumbai, Maharashtra",
+}
+
+LIBRARY_DESCRIPTIONS_MAP = {
+    "mumbai-lib-1": "Historic Grade I heritage reading room and library in Kala Ghoda, featuring high-ceilinged teakwood reading halls, lush garden courtyards, and over 70,000 archival volumes.",
+    "mumbai-lib-2": "Premier scholarly reference institution housed within Town Hall, featuring monumental Doric columns, ancient manuscripts including a 14th-century Dante, and over 100,000 Indology volumes.",
+    "mumbai-lib-3": "Founded in 1898, the apex public research institution for Marathi literature and historical archives, offering affordable study halls and over 600,000 curated regional works.",
+    "mumbai-lib-4": "UNESCO Heritage Award-winning Gothic Revival reading sanctuary on D.N. Road, renowned for stained glass windows, carved balconies, and extensive rare book collections.",
+    "mumbai-lib-5": "Founded in 1891 near Dhobi Talao to provide unrestricted free civic access to daily periodicals, rare Mumbai gazettes, and comfortable community reading desks.",
+    "mumbai-lib-6": "Historic neighborhood cultural sanctuary on Waterfield Road serving suburban readers with fiction lending, tranquil study tables, and community literacy programs.",
+    "mumbai-lib-7": "Centrally located civic reading facility on S.V. Road near transit hubs, providing competitive exam preparation zones, high-speed Wi-Fi, and reference literature.",
+    "mumbai-lib-8": "Welcoming neighborhood study haven near Station Road offering spacious timber desks, air-conditioned study carrels, and educational lending catalogs.",
+    "mumbai-lib-9": "Spacious civic study sanctuary on Chandavarkar Road catering to northern suburb scholars with extensive reference shelves, digital catalogs, and quiet reading zones.",
+    "mumbai-lib-10": "Contemporary lakeside knowledge hub in Hiranandani Gardens featuring digital catalogue kiosks, STEM reference works, and collaborative civic workspaces.",
+    "mumbai-lib-11": "Community-centric public reading hall along S.V. Road offering quiet study booths, student textbook reserves, and daily periodicals.",
+    "mumbai-lib-12": "Intimate heritage reading nook near Colaba Causeway dedicated to maritime histories, architectural gazetteers, and tranquil reading chairs.",
+}
+
+def serialize_library(lib: models.Library) -> dict:
+    import json
+    services = []
+    if lib.services_json:
+        try:
+            services = json.loads(lib.services_json)
+        except Exception:
+            services = [s.strip() for s in lib.services_json.split(",") if s.strip()]
+    accessibility = []
+    if lib.accessibility_json:
+        try:
+            accessibility = json.loads(lib.accessibility_json)
+        except Exception:
+            accessibility = [a.strip() for a in lib.accessibility_json.split(",") if a.strip()]
+
+    coords = {}
+    if lib.latitude and lib.longitude:
+        try:
+            coords = {"lat": float(lib.latitude), "lng": float(lib.longitude)}
+        except Exception:
+            coords = {"lat": 18.9298, "lng": 72.8331}
+    else:
+        coords = {"lat": 18.9298, "lng": 72.8331}
+
+    return {
+        "id": lib.id,
+        "name": lib.name,
+        "cardName": getattr(lib, "card_name", None) or LIBRARY_CARD_NAMES_MAP.get(lib.id, lib.name),
+        "locationDisplay": getattr(lib, "location_display", None) or LIBRARY_LOCATIONS_MAP.get(lib.id, f"{lib.locality or lib.area}, Mumbai, Maharashtra"),
+        "image": getattr(lib, "image", None) or LIBRARY_IMAGES_MAP.get(lib.id, "/images/libraries/david-sassoon.jpg"),
+        "isAiGenerated": True,
+        "imageBadgeText": "AI-Generated Illustration",
+        "area": lib.area or "",
+        "locality": lib.locality or "",
+        "region": lib.region or "Mumbai",
+        "city": lib.city or "Mumbai",
+        "state": lib.state or "Maharashtra",
+        "country": lib.country or "India",
+        "pincode": lib.pincode or "",
+        "address": lib.address or "",
+        "nearestTransit": lib.nearest_transit or "",
+        "phone": lib.phone or "",
+        "email": lib.email or "",
+        "website": lib.website or "",
+        "establishedYear": lib.established_year or 1900,
+        "isFlagship": bool(lib.is_flagship),
+        "isVerified": bool(lib.is_verified),
+        "isActive": bool(getattr(lib, "is_active", True)),
+        "verificationStatus": lib.verification_status or "Civic Heritage Library",
+        "accessType": lib.access_type or "Public Free Entry",
+        "accessNote": lib.access_note or getattr(lib, "description", "") or "",
+        "description": getattr(lib, "description", "") or lib.access_note or "",
+        "supervisor": lib.supervisor or "Branch Head",
+        "hours": {
+            "weekdays": lib.hours_weekdays or "09:00 AM – 08:00 PM",
+            "saturday": lib.hours_saturday or "09:00 AM – 06:00 PM",
+            "sunday": lib.hours_sunday or "Closed"
+        },
+        "services": services,
+        "accessibility": accessibility,
+        "mapPosition": {
+            "top": lib.map_top or "50%",
+            "left": lib.map_left or "50%"
+        },
+        "coordinates": coords,
+        "mapSearchQuery": lib.map_search_query or f"{lib.name} Mumbai"
+    }
+
 @app.get("/api/libraries")
 def get_mumbai_libraries(
     q: Optional[str] = Query(None, description="Search query for name, locality, address"),
     locality: Optional[str] = Query(None, description="Filter by Mumbai locality"),
     facility: Optional[str] = Query(None, description="Filter by facility or service"),
-    verified_only: Optional[bool] = Query(None, description="Filter only verified institutions")
+    verified_only: Optional[bool] = Query(None, description="Filter only verified institutions"),
+    db: Session = Depends(get_db)
 ):
-    results = MUMBAI_LIBRARIES_DATA
+    # Query live database records first
+    db_libs = db.query(models.Library).filter(models.Library.is_active == True).all()
+    if db_libs:
+        results = [serialize_library(l) for l in db_libs]
+    else:
+        results = [
+            {
+                **lib,
+                "cardName": LIBRARY_CARD_NAMES_MAP.get(lib["id"], lib["name"]),
+                "locationDisplay": LIBRARY_LOCATIONS_MAP.get(lib["id"], f"{lib.get('locality') or lib.get('area')}, Mumbai, Maharashtra"),
+                "image": LIBRARY_IMAGES_MAP.get(lib["id"], "/images/libraries/david-sassoon.jpg"),
+                "isAiGenerated": True,
+                "imageBadgeText": "AI-Generated Illustration",
+                "description": LIBRARY_DESCRIPTIONS_MAP.get(lib["id"], lib.get("accessNote", ""))
+            }
+            for lib in MUMBAI_LIBRARIES_DATA
+        ]
 
     if verified_only:
         results = [lib for lib in results if lib.get("isVerified") is True]
@@ -662,15 +809,26 @@ def get_mumbai_libraries(
     }
 
 @app.get("/api/libraries/{library_id}")
-def get_library_by_id(library_id: str):
+def get_library_by_id(library_id: str, db: Session = Depends(get_db)):
     """
     Retrieve single Mumbai library branch details by ID (e.g., 'mumbai-lib-1').
     """
     clean_id = library_id.strip().lower()
+    
+    # 1. Direct DB match
+    db_lib = db.query(models.Library).filter(func.lower(models.Library.id) == clean_id).first()
+    if db_lib:
+        return serialize_library(db_lib)
+        
+    # 2. Partial DB match
+    db_lib_partial = db.query(models.Library).filter(func.lower(models.Library.id).contains(clean_id)).first()
+    if db_lib_partial:
+        return serialize_library(db_lib_partial)
+
+    # 3. Fallback to in-memory seed dataset
     for lib in MUMBAI_LIBRARIES_DATA:
         if lib.get("id", "").lower() == clean_id:
             return lib
-    # Partial match fallback e.g. 'lib-1' -> 'mumbai-lib-1'
     for lib in MUMBAI_LIBRARIES_DATA:
         if clean_id in lib.get("id", "").lower():
             return lib
@@ -745,6 +903,38 @@ def login(login_data: schemas.UserLogin, db: Session = Depends(get_db)):
         "user": user
     }
 
+
+@app.post("/api/auth/admin-login", response_model=schemas.TokenResponse)
+def admin_login(login_data: schemas.UserLogin, db: Session = Depends(get_db)):
+    """
+    Dedicated Administrator Login.
+    Strictly verifies admin role and active account status.
+    Rejects patrons and regular staff from logging in as administrator.
+    """
+    user = db.query(models.User).filter(models.User.email == login_data.email.lower()).first()
+    if not user or not verify_password(login_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid administrator credentials provided."
+        )
+    if not getattr(user, "is_active", True):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: This administrator account has been deactivated."
+        )
+    if user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Administrator privileges required to access the Admin Portal."
+        )
+    
+    token = create_access_token(data={"sub": str(user.id), "role": user.role})
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": user
+    }
+
 @app.get("/api/auth/me", response_model=schemas.UserResponse)
 def get_current_user_profile(user: models.User = Depends(get_current_user)):
     return user
@@ -793,11 +983,14 @@ def get_books(
     category: Optional[str] = None,
     language: Optional[str] = None,
     available_only: bool = False,
+    include_inactive: bool = False,
     limit: int = 100,
     offset: int = 0,
     db: Session = Depends(get_db)
 ):
-    query = db.query(models.Book).filter(models.Book.is_active == True)
+    query = db.query(models.Book)
+    if not include_inactive:
+        query = query.filter(models.Book.is_active == True)
 
     if category:
         query = query.filter(models.Book.category.ilike(f"%{category}%"))
@@ -1568,3 +1761,462 @@ def get_all_users_for_checkout(
     db: Session = Depends(get_db)
 ):
     return db.query(models.User).order_by(models.User.full_name.asc()).all()
+
+
+# =========================================================================
+# ADMIN PORTAL API ENDPOINTS (LIBRARIES, USERS, DASHBOARD STATS)
+# =========================================================================
+
+@app.get("/api/admin/dashboard-stats")
+def get_admin_dashboard_stats(
+    current_admin: models.User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    """
+    Aggregate live KPI metrics, recent updates, and circulation charts for Admin Portal.
+    """
+    total_libraries = db.query(models.Library).filter(models.Library.is_active == True).count()
+    total_books = db.query(models.Book).filter(models.Book.is_active == True).count()
+    total_copies = db.query(func.sum(models.Book.total_copies)).filter(models.Book.is_active == True).scalar() or 0
+    registered_users = db.query(models.User).count()
+    active_borrowings = db.query(models.BorrowingRecord).filter(
+        models.BorrowingRecord.status.in_(["borrowed", "due_soon", "due_today", "overdue"])
+    ).count()
+    overdue_borrowings = db.query(models.BorrowingRecord).filter(
+        models.BorrowingRecord.status == "overdue"
+    ).count()
+    pending_requests = db.query(models.BookRequest).filter(
+        models.BookRequest.status == "pending"
+    ).count()
+    pending_feedback = db.query(models.Feedback).filter(
+        models.Feedback.status == "new"
+    ).count()
+
+    # Recent Books Added
+    recent_books_raw = db.query(models.Book).order_by(models.Book.created_at.desc()).limit(6).all()
+    recent_books = [{
+        "id": b.id,
+        "title": b.title,
+        "author": b.author,
+        "category": b.category,
+        "publisher": b.publisher or "General Circulation",
+        "publication_year": b.publication_year or 2023,
+        "cover_url": b.cover_url,
+        "total_copies": b.total_copies,
+        "available_copies": b.available_copies,
+        "is_active": b.is_active,
+        "created_at": b.created_at.isoformat() if b.created_at else None
+    } for b in recent_books_raw]
+
+    # Recent Libraries Updated / Added
+    recent_libs_raw = db.query(models.Library).order_by(models.Library.created_at.desc()).limit(6).all()
+    recent_libraries = [{
+        "id": l.id,
+        "name": l.name,
+        "locality": l.locality,
+        "city": l.city,
+        "phone": l.phone,
+        "is_verified": l.is_verified,
+        "is_active": getattr(l, "is_active", True),
+        "created_at": l.created_at.isoformat() if l.created_at else None
+    } for l in recent_libs_raw]
+
+    # Recent User Activities Stream
+    recent_loans = db.query(models.BorrowingRecord).order_by(models.BorrowingRecord.updated_at.desc()).limit(8).all()
+    activities = []
+    for loan in recent_loans:
+        u_name = loan.user.full_name if loan.user else f"Member #{loan.user_id}"
+        b_title = loan.book.title if loan.book else f"Book #{loan.book_id}"
+        activities.append({
+            "id": f"loan-{loan.id}",
+            "type": "checkout" if loan.status != "returned" else "return",
+            "title": f"{u_name} • {loan.status.replace('_', ' ').title()}",
+            "description": f"'{b_title}' (Due: {loan.due_date})",
+            "timestamp": (loan.updated_at or loan.created_at).isoformat() if (loan.updated_at or loan.created_at) else None,
+            "status": loan.status
+        })
+
+    # Category distribution for visual charts
+    cat_counts = db.query(
+        models.Book.category, func.count(models.Book.id)
+    ).filter(models.Book.is_active == True).group_by(models.Book.category).all()
+    category_distribution = [{"category": c[0], "count": c[1]} for c in cat_counts]
+
+    return {
+        "total_libraries": total_libraries,
+        "total_books": total_books,
+        "total_copies": int(total_copies),
+        "registered_users": registered_users,
+        "active_borrowings": active_borrowings,
+        "overdue_borrowings": overdue_borrowings,
+        "pending_book_requests": pending_requests,
+        "pending_feedback": pending_feedback,
+        "recent_books": recent_books,
+        "recent_libraries": recent_libraries,
+        "recent_activities": activities,
+        "category_distribution": category_distribution
+    }
+
+
+# --- Library Management Admin Endpoints ---
+
+@app.get("/api/admin/libraries")
+def get_admin_libraries(
+    search: Optional[str] = None,
+    locality: Optional[str] = None,
+    status_filter: Optional[str] = None,
+    current_admin: models.User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    query = db.query(models.Library)
+    if search:
+        s = f"%{search.strip()}%"
+        query = query.filter(or_(
+            models.Library.name.ilike(s),
+            models.Library.area.ilike(s),
+            models.Library.locality.ilike(s),
+            models.Library.city.ilike(s),
+            models.Library.pincode.ilike(s),
+            models.Library.phone.ilike(s),
+            models.Library.email.ilike(s)
+        ))
+    if locality and locality != "All Localities":
+        query = query.filter(models.Library.locality.ilike(f"%{locality}%"))
+    if status_filter == "active":
+        query = query.filter(models.Library.is_active == True)
+    elif status_filter == "inactive":
+        query = query.filter(models.Library.is_active == False)
+    
+    libs = query.order_by(models.Library.name.asc()).all()
+    return [serialize_library(l) for l in libs]
+
+
+@app.post("/api/libraries", status_code=status.HTTP_201_CREATED)
+def create_library(
+    payload: dict,
+    current_admin: models.User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    import json
+    import re
+    raw_name = payload.get("name", "New Public Library").strip()
+    slug = re.sub(r'[^a-z0-9]+', '-', raw_name.lower()).strip('-')[:25]
+    lib_id = payload.get("id") or f"mumbai-lib-{slug}-{int(datetime.utcnow().timestamp()) % 10000}"
+    
+    # Ensure ID uniqueness
+    existing = db.query(models.Library).filter(models.Library.id == lib_id).first()
+    if existing:
+        lib_id = f"{lib_id}-{random.randint(100, 999)}"
+
+    hours = payload.get("hours", {})
+    services = payload.get("services", ["General Book Lending", "Reference Section", "Reading Hall"])
+    if isinstance(services, list):
+        services_str = json.dumps(services)
+    else:
+        services_str = str(services)
+
+    new_lib = models.Library(
+        id=lib_id,
+        name=raw_name,
+        area=payload.get("area") or payload.get("locality") or "Mumbai",
+        locality=payload.get("locality") or payload.get("area") or "Mumbai",
+        region=payload.get("region", "South Mumbai"),
+        city=payload.get("city", "Mumbai"),
+        state=payload.get("state", "Maharashtra"),
+        country=payload.get("country", "India"),
+        pincode=payload.get("pincode", "400001"),
+        address=payload.get("address", ""),
+        nearest_transit=payload.get("nearestTransit", payload.get("nearest_transit", "Near Railway Station")),
+        phone=payload.get("phone", "+91 (022) 2200-0000"),
+        email=payload.get("email", ""),
+        website=payload.get("website", ""),
+        established_year=payload.get("establishedYear", payload.get("established_year", 2024)),
+        is_flagship=bool(payload.get("isFlagship", payload.get("is_flagship", False))),
+        is_verified=bool(payload.get("isVerified", payload.get("is_verified", True))),
+        is_active=bool(payload.get("isActive", payload.get("is_active", True))),
+        verification_status=payload.get("verificationStatus", payload.get("verification_status", "Municipal Public Library")),
+        access_type=payload.get("accessType", payload.get("access_type", "Public Free Entry")),
+        access_note=payload.get("description", payload.get("accessNote", "")),
+        description=payload.get("description", ""),
+        supervisor=payload.get("supervisor", "Chief Librarian"),
+        hours_weekdays=hours.get("weekdays", "09:00 AM – 08:00 PM") if isinstance(hours, dict) else "09:00 AM – 08:00 PM",
+        hours_saturday=hours.get("saturday", "09:00 AM – 06:00 PM") if isinstance(hours, dict) else "09:00 AM – 06:00 PM",
+        hours_sunday=hours.get("sunday", "Closed") if isinstance(hours, dict) else "Closed",
+        services_json=services_str,
+        accessibility_json=json.dumps(payload.get("accessibility", ["Wheelchair Accessible", "Elevator Access"])),
+        map_top=payload.get("mapPosition", {}).get("top", "50%") if isinstance(payload.get("mapPosition"), dict) else "50%",
+        map_left=payload.get("mapPosition", {}).get("left", "50%") if isinstance(payload.get("mapPosition"), dict) else "50%",
+        latitude=str(payload.get("coordinates", {}).get("lat", "18.9298")) if isinstance(payload.get("coordinates"), dict) else "18.9298",
+        longitude=str(payload.get("coordinates", {}).get("lng", "72.8331")) if isinstance(payload.get("coordinates"), dict) else "72.8331",
+        map_search_query=payload.get("mapSearchQuery", f"{raw_name} Mumbai")
+    )
+    db.add(new_lib)
+    db.commit()
+    db.refresh(new_lib)
+    return serialize_library(new_lib)
+
+
+@app.put("/api/libraries/{library_id}")
+def update_library(
+    library_id: str,
+    payload: dict,
+    current_admin: models.User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    lib = db.query(models.Library).filter(models.Library.id == library_id).first()
+    if not lib:
+        raise HTTPException(status_code=404, detail="Library branch not found.")
+
+    import json
+    if "name" in payload: lib.name = payload["name"].strip()
+    if "area" in payload: lib.area = payload["area"].strip()
+    if "locality" in payload: lib.locality = payload["locality"].strip()
+    if "region" in payload: lib.region = payload["region"]
+    if "city" in payload: lib.city = payload["city"]
+    if "state" in payload: lib.state = payload["state"]
+    if "country" in payload: lib.country = payload["country"]
+    if "pincode" in payload: lib.pincode = payload["pincode"]
+    if "address" in payload: lib.address = payload["address"]
+    if "nearestTransit" in payload: lib.nearest_transit = payload["nearestTransit"]
+    if "phone" in payload: lib.phone = payload["phone"]
+    if "email" in payload: lib.email = payload["email"]
+    if "website" in payload: lib.website = payload["website"]
+    if "establishedYear" in payload: lib.established_year = payload["establishedYear"]
+    if "isFlagship" in payload: lib.is_flagship = bool(payload["isFlagship"])
+    if "isVerified" in payload: lib.is_verified = bool(payload["isVerified"])
+    if "isActive" in payload: lib.is_active = bool(payload["isActive"])
+    if "is_active" in payload: lib.is_active = bool(payload["is_active"])
+    if "verificationStatus" in payload: lib.verification_status = payload["verificationStatus"]
+    if "accessType" in payload: lib.access_type = payload["accessType"]
+    if "accessNote" in payload: lib.access_note = payload["accessNote"]
+    if "description" in payload:
+        lib.description = payload["description"]
+        if not lib.access_note:
+            lib.access_note = payload["description"]
+    if "supervisor" in payload: lib.supervisor = payload["supervisor"]
+
+    hours = payload.get("hours")
+    if isinstance(hours, dict):
+        if "weekdays" in hours: lib.hours_weekdays = hours["weekdays"]
+        if "saturday" in hours: lib.hours_saturday = hours["saturday"]
+        if "sunday" in hours: lib.hours_sunday = hours["sunday"]
+
+    if "services" in payload:
+        srv = payload["services"]
+        lib.services_json = json.dumps(srv) if isinstance(srv, list) else str(srv)
+
+    db.commit()
+    db.refresh(lib)
+    return serialize_library(lib)
+
+
+@app.delete("/api/libraries/{library_id}")
+def delete_library(
+    library_id: str,
+    current_admin: models.User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    lib = db.query(models.Library).filter(models.Library.id == library_id).first()
+    if not lib:
+        raise HTTPException(status_code=404, detail="Library branch not found.")
+    
+    lib_name = lib.name
+    db.delete(lib)
+    db.commit()
+    return {"message": f"Library '{lib_name}' has been deleted successfully.", "success": True}
+
+
+@app.patch("/api/libraries/{library_id}/status")
+def toggle_library_status(
+    library_id: str,
+    payload: dict,
+    current_admin: models.User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    lib = db.query(models.Library).filter(models.Library.id == library_id).first()
+    if not lib:
+        raise HTTPException(status_code=404, detail="Library branch not found.")
+    
+    if "is_active" in payload:
+        lib.is_active = bool(payload["is_active"])
+    elif "isActive" in payload:
+        lib.is_active = bool(payload["isActive"])
+    else:
+        lib.is_active = not getattr(lib, "is_active", True)
+    
+    db.commit()
+    db.refresh(lib)
+    status_label = "activated" if lib.is_active else "deactivated"
+    return {"message": f"Library '{lib.name}' has been {status_label}.", "is_active": lib.is_active}
+
+
+# --- Book Management Status Toggle ---
+
+@app.patch("/api/books/{book_id}/status")
+def toggle_book_status(
+    book_id: int,
+    payload: dict,
+    current_staff: models.User = Depends(get_current_librarian),
+    db: Session = Depends(get_db)
+):
+    book = db.query(models.Book).filter(models.Book.id == book_id).first()
+    if not book:
+        raise HTTPException(status_code=404, detail="Book not found in catalog.")
+    
+    new_status = payload.get("is_active")
+    if new_status is None:
+        new_status = not book.is_active
+
+    if not new_status:
+        active_loans = db.query(models.BorrowingRecord).filter(
+            models.BorrowingRecord.book_id == book_id,
+            models.BorrowingRecord.status.in_(["borrowed", "due_soon", "due_today", "overdue"])
+        ).count()
+        if active_loans > 0:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Cannot deactivate '{book.title}': {active_loans} active loan(s) exist."
+            )
+
+    book.is_active = bool(new_status)
+    db.commit()
+    db.refresh(book)
+    state_str = "activated" if book.is_active else "deactivated"
+    return {"message": f"Book '{book.title}' has been {state_str}.", "is_active": book.is_active}
+
+
+# --- User Management Admin Endpoints ---
+
+@app.get("/api/admin/users")
+def get_admin_users(
+    search: Optional[str] = None,
+    role: Optional[str] = None,
+    status_filter: Optional[str] = None,
+    current_admin: models.User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    query = db.query(models.User)
+    if search:
+        s = f"%{search.strip()}%"
+        query = query.filter(or_(
+            models.User.full_name.ilike(s),
+            models.User.email.ilike(s),
+            models.User.member_card_no.ilike(s),
+            models.User.phone.ilike(s)
+        ))
+    if role and role != "all":
+        query = query.filter(models.User.role == role)
+    if status_filter == "active":
+        query = query.filter(models.User.is_active == True)
+    elif status_filter == "inactive":
+        query = query.filter(models.User.is_active == False)
+    
+    users = query.order_by(models.User.id.asc()).all()
+    results = []
+    for u in users:
+        active_loans = db.query(models.BorrowingRecord).filter(
+            models.BorrowingRecord.user_id == u.id,
+            models.BorrowingRecord.status.in_(["borrowed", "due_soon", "due_today", "overdue"])
+        ).count()
+        total_loans = db.query(models.BorrowingRecord).filter(
+            models.BorrowingRecord.user_id == u.id
+        ).count()
+        results.append({
+            "id": u.id,
+            "email": u.email,
+            "full_name": u.full_name,
+            "role": u.role,
+            "phone": u.phone or "",
+            "member_card_no": u.member_card_no,
+            "is_active": bool(getattr(u, "is_active", True)),
+            "created_at": u.created_at.isoformat() if u.created_at else None,
+            "active_loans": active_loans,
+            "total_loans": total_loans
+        })
+    return results
+
+
+@app.get("/api/admin/users/{user_id}/details")
+def get_user_details(
+    user_id: int,
+    current_admin: models.User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    target = db.query(models.User).filter(models.User.id == user_id).first()
+    if not target:
+        raise HTTPException(status_code=404, detail="User account not found.")
+
+    records = db.query(models.BorrowingRecord).filter(
+        models.BorrowingRecord.user_id == user_id
+    ).order_by(models.BorrowingRecord.borrow_date.desc()).all()
+
+    borrowing_history = []
+    for r in records:
+        book_title = r.book.title if r.book else f"Book #{r.book_id}"
+        borrowing_history.append({
+            "id": r.id,
+            "book_id": r.book_id,
+            "book_title": book_title,
+            "borrow_date": r.borrow_date.isoformat(),
+            "due_date": r.due_date.isoformat(),
+            "return_date": r.return_date.isoformat() if r.return_date else None,
+            "status": r.status,
+            "renew_count": r.renew_count
+        })
+
+    return {
+        "id": target.id,
+        "email": target.email,
+        "full_name": target.full_name,
+        "role": target.role,
+        "phone": target.phone,
+        "member_card_no": target.member_card_no,
+        "is_active": bool(getattr(target, "is_active", True)),
+        "created_at": target.created_at.isoformat() if target.created_at else None,
+        "borrowing_history": borrowing_history
+    }
+
+
+@app.patch("/api/admin/users/{user_id}/status")
+def toggle_user_account_status(
+    user_id: int,
+    payload: dict,
+    current_admin: models.User = Depends(get_current_admin),
+    db: Session = Depends(get_db)
+):
+    # Rule 1: Prevent administrator from disabling their own account
+    if user_id == current_admin.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Operation rejected: You cannot deactivate your own active administrator account."
+        )
+
+    target = db.query(models.User).filter(models.User.id == user_id).first()
+    if not target:
+        raise HTTPException(status_code=404, detail="User account not found.")
+
+    new_status = payload.get("is_active")
+    if new_status is None:
+        new_status = not getattr(target, "is_active", True)
+
+    # Rule 2: Prevent removing/disabling the last active administrator
+    if target.role == "admin" and not new_status:
+        active_admins = db.query(models.User).filter(
+            models.User.role == "admin",
+            models.User.is_active == True
+        ).count()
+        if active_admins <= 1:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Operation rejected: Cannot deactivate the last active administrator."
+            )
+
+    target.is_active = bool(new_status)
+    db.commit()
+    db.refresh(target)
+    action_text = "activated" if target.is_active else "deactivated"
+    return {
+        "message": f"Account for {target.full_name} ({target.email}) has been {action_text}.",
+        "user_id": target.id,
+        "is_active": target.is_active
+    }

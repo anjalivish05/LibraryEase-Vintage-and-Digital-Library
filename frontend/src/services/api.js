@@ -113,6 +113,18 @@ export const api = {
       return res;
     },
 
+    async adminLogin(email, password) {
+      const res = await api.request('/auth/admin-login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password })
+      });
+      if (res?.access_token) {
+        api.setToken(res.access_token);
+        api.setStoredUser(res.user);
+      }
+      return res;
+    },
+
     async register(userData) {
       const res = await api.request('/auth/register', {
         method: 'POST',
@@ -146,6 +158,9 @@ export const api = {
       if (params.search) queryParts.push(`search=${encodeURIComponent(params.search)}`);
       if (params.category && params.category !== 'All Categories') {
         queryParts.push(`category=${encodeURIComponent(params.category)}`);
+      }
+      if (params.include_inactive) {
+        queryParts.push('include_inactive=true');
       }
       if (params.availableOnly) queryParts.push(`available_only=true`);
       if (params.limit) queryParts.push(`limit=${params.limit}`);
@@ -186,6 +201,13 @@ export const api = {
     async delete(bookId) {
       return api.request(`/books/${bookId}`, {
         method: 'DELETE'
+      });
+    },
+
+    async toggleStatus(bookId, isActive) {
+      return api.request(`/books/${bookId}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ is_active: isActive })
       });
     }
   },
@@ -310,6 +332,70 @@ export const api = {
   },
 
   // Librarian & Administrative Services
+
+  // Dedicated Administrator Portal Services
+  admin: {
+    async getDashboardStats() {
+      return api.request('/admin/dashboard-stats');
+    },
+
+    async getLibraries(params = {}) {
+      const parts = [];
+      if (params.search) parts.push(`search=${encodeURIComponent(params.search)}`);
+      if (params.locality) parts.push(`locality=${encodeURIComponent(params.locality)}`);
+      if (params.status) parts.push(`status_filter=${encodeURIComponent(params.status)}`);
+      const q = parts.length ? `?${parts.join('&')}` : '';
+      return api.request(`/admin/libraries${q}`);
+    },
+
+    async createLibrary(libraryData) {
+      return api.request('/libraries', {
+        method: 'POST',
+        body: JSON.stringify(libraryData)
+      });
+    },
+
+    async updateLibrary(libraryId, libraryData) {
+      return api.request(`/libraries/${libraryId}`, {
+        method: 'PUT',
+        body: JSON.stringify(libraryData)
+      });
+    },
+
+    async deleteLibrary(libraryId) {
+      return api.request(`/libraries/${libraryId}`, {
+        method: 'DELETE'
+      });
+    },
+
+    async toggleLibraryStatus(libraryId, isActive) {
+      return api.request(`/libraries/${libraryId}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ is_active: isActive })
+      });
+    },
+
+    async getUsers(params = {}) {
+      const parts = [];
+      if (params.search) parts.push(`search=${encodeURIComponent(params.search)}`);
+      if (params.role) parts.push(`role=${encodeURIComponent(params.role)}`);
+      if (params.status) parts.push(`status_filter=${encodeURIComponent(params.status)}`);
+      const q = parts.length ? `?${parts.join('&')}` : '';
+      return api.request(`/admin/users${q}`);
+    },
+
+    async getUserDetails(userId) {
+      return api.request(`/admin/users/${userId}/details`);
+    },
+
+    async toggleUserStatus(userId, isActive) {
+      return api.request(`/admin/users/${userId}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ is_active: isActive })
+      });
+    }
+  },
+
   librarian: {
     async getStats() {
       return api.request('/librarian/stats');

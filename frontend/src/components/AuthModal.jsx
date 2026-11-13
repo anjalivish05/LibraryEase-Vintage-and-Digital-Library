@@ -298,6 +298,21 @@ export default function AuthModal({
                 Register free civic membership
               </button>
             </p>
+
+            <div style={{ marginTop: '16px', paddingTop: '12px', borderTop: '1px dashed rgba(231, 214, 184, 0.5)', textAlign: 'center' }}>
+              <button
+                type="button"
+                className="auth-switch-link"
+                onClick={() => {
+                  onClose();
+                  window.location.hash = 'admin-login';
+                }}
+                style={{ fontSize: '0.82rem', color: '#6B1E2B', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                <ShieldCheck size={14} />
+                <span>Administrator Console Access &rarr;</span>
+              </button>
+            </div>
           </form>
         )}
 

@@ -1,0 +1,885 @@
+/* ==========================================================================
+   LibraryEase — Heritage Navigation Bar Styles
+   Design Direction: Vintage Library + Modern AI
+   Matches Reference: media_1794498913857_3627457d.jpg
+   ========================================================================== */
+
+:root {
+  /* Antique Brocade 5-Color Design Tokens for Navbar */
+  --nav-primary-burgundy: #6B1E2B;      /* Burgundy: Branding, active nav, primary actions */
+  --nav-deep-wine: #5C4033;             /* Walnut: Announcement topbar, dark accents */
+  --nav-warm-ivory: #F8F2EA;            /* Cream: Dominant header background */
+  --nav-cream-bg: #F8F2EA;              /* Cream */
+  --nav-parchment: #B6A89C;             /* Soft Taupe: Subtle borders, secondary tags */
+  --nav-muted-sage: #B68A4C;            /* Bronze: Icons, decorative flourishes */
+  --nav-dusty-rose: #ECE5DE;            /* Soft Taupe Light Tint: AI pill */
+  --nav-dusty-lavender: #ECE5DE;
+  --nav-lavender-pill: #ECE5DE;
+  --nav-ink-charcoal: #2B1E1A;          /* Walnut Charcoal: High contrast text */
+  --nav-antique-gold: #B68A4C;          /* Bronze: Borders, highlights, badges */
+  --nav-gold-border: rgba(182, 138, 76, 0.45);
+  --nav-shadow: 0 4px 18px rgba(92, 64, 51, 0.08);
+
+  /* Legacy aliases for component compatibility */
+  --nav-forest-green: #6B1E2B;
+  --nav-deep-forest: #5C4033;
+  --nav-antique-cream: #F8F2EA;
+}
+
+/* --------------------------------------------------------------------------
+   Top Announcement Bar (Slim Dark Forest-Green)
+   -------------------------------------------------------------------------- */
+.heritage-topbar {
+  background-color: var(--nav-deep-forest);
+  color: var(--nav-antique-cream);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.775rem;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(184, 149, 85, 0.3);
+  position: relative;
+  z-index: 1002;
+}
+
+.heritage-topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.heritage-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.topbar-membership-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--nav-parchment);
+  color: var(--nav-deep-forest);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(184, 149, 85, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
+}
+
+.topbar-badge-icon {
+  color: var(--nav-deep-forest);
+}
+
+.topbar-divider {
+  color: rgba(231, 214, 184, 0.35);
+  font-weight: 300;
+  font-size: 0.85rem;
+  user-select: none;
+}
+
+.heritage-topbar-center {
+  flex: 1;
+  text-align: center;
+  color: #F8F2EA;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 8px;
+}
+
+.topbar-welcome-strong {
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.heritage-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.topbar-location-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  color: #FFFFFF;
+  font-size: 0.775rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.topbar-location-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--nav-parchment);
+}
+
+.topbar-pin-icon {
+  color: var(--nav-antique-gold);
+}
+
+.topbar-chevron {
+  opacity: 0.8;
+  transition: transform 0.2s ease;
+}
+
+.topbar-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* Location Popup Menu */
+.location-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 20px;
+  margin-top: 4px;
+  background: var(--nav-cream-bg);
+  border: 1px solid var(--nav-antique-gold);
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 240px;
+  padding: 8px 0;
+  z-index: 1050;
+  color: var(--nav-ink-charcoal);
+  animation: fadeInDown 0.15s ease-out;
+}
+
+.location-dropdown-header {
+  padding: 6px 14px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--nav-forest-green);
+  font-weight: 700;
+  border-bottom: 1px solid rgba(184, 149, 85, 0.2);
+}
+
+.location-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  font-size: 0.8rem;
+  color: var(--nav-ink-charcoal);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.location-dropdown-item:hover {
+  background: rgba(184, 149, 85, 0.12);
+  color: var(--nav-deep-forest);
+}
+
+.location-dropdown-item.active {
+  font-weight: 700;
+  color: var(--nav-forest-green);
+  background: rgba(107, 30, 43, 0.08);
+}
+
+/* --------------------------------------------------------------------------
+   Main Navigation Header
+   Warm Antique Cream Background with Subtle Architectural Illustrations
+   -------------------------------------------------------------------------- */
+.heritage-main-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: var(--nav-warm-ivory);
+  background-image: linear-gradient(180deg, #FFFDF8 0%, #F8F2EA 100%);
+  border-bottom: 1.5px solid rgba(182, 138, 76, 0.4);
+  box-shadow: var(--nav-shadow);
+  overflow: visible;
+}
+
+.heritage-header-container {
+  position: relative;
+  width: 100%;
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Subtle Edge Watermark (Architectural facade on left) */
+.nav-watermark-left {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 120px;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.28;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Left Section: Brand Logo & Subtitle
+   -------------------------------------------------------------------------- */
+.heritage-brand-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 8px;
+  text-align: left;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.heritage-brand-btn:hover {
+  transform: translateY(-1px);
+}
+
+.heritage-logo-square {
+  width: 44px;
+  height: 44px;
+  background: var(--nav-cream-bg);
+  border: 1.5px solid var(--nav-primary-burgundy);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--nav-primary-burgundy);
+  box-shadow: 0 2px 6px rgba(107, 30, 43, 0.12);
+  flex-shrink: 0;
+}
+
+.heritage-logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.heritage-brand-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.42rem;
+  font-weight: 700;
+  color: var(--nav-primary-burgundy);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.heritage-brand-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.63rem;
+  font-weight: 700;
+  color: var(--nav-antique-gold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   Center Section: Navigation Items
+   Matches the exact layout of the visual reference
+   -------------------------------------------------------------------------- */
+.heritage-nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Default Nav Item: Icon above text, centered */
+.heritage-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: var(--nav-ink-charcoal);
+  transition: all 0.2s ease;
+  position: relative;
+  min-width: 58px;
+}
+
+.heritage-nav-item:hover {
+  color: var(--nav-primary-burgundy);
+  background: rgba(182, 138, 76, 0.12);
+  transform: translateY(-1px);
+}
+
+.nav-item-icon {
+  color: var(--nav-ink-charcoal);
+  margin-bottom: 3px;
+  transition: color 0.2s ease;
+}
+
+.heritage-nav-item:hover .nav-item-icon {
+  color: var(--nav-antique-gold);
+}
+
+.nav-item-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.775rem;
+  font-weight: 500;
+  line-height: 1.15;
+  text-align: center;
+  white-space: normal;
+  max-width: 74px;
+}
+
+.nav-item-label-with-caret {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* Active Nav Item: Solid Burgundy Pill Button */
+.heritage-nav-item.active-pill {
+  flex-direction: row;
+  gap: 7px;
+  background-color: var(--nav-primary-burgundy);
+  color: #FFFDF8;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  box-shadow: 0 3px 8px rgba(107, 30, 43, 0.25);
+  min-width: auto;
+}
+
+.heritage-nav-item.active-pill:hover {
+  background-color: #541722;
+  color: #FFFFFF;
+}
+
+.heritage-nav-item.active-pill .nav-item-icon {
+  color: #FFFDF8;
+  margin-bottom: 0;
+}
+
+.heritage-nav-item.active-pill .nav-item-label {
+  color: #FFFDF8;
+  font-weight: 600;
+  font-size: 0.825rem;
+  max-width: none;
+}
+
+/* AI Assistant Pill Button: Subtle Dusty Rose Accent */
+.heritage-ai-btn {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--nav-dusty-rose);
+  color: var(--nav-deep-wine);
+  border: 1px solid rgba(107, 30, 43, 0.22);
+  padding: 8px 14px;
+  border-radius: 9999px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.heritage-ai-btn:hover {
+  background-color: #DFCFD4;
+  border-color: var(--nav-antique-gold);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(182, 168, 156, 0.5);
+}
+
+.heritage-ai-btn.active {
+  background-color: var(--nav-primary-burgundy);
+  border-color: var(--nav-deep-wine);
+  color: #FFFDF8;
+  font-weight: 700;
+}
+
+.ai-sparkle-icon {
+  color: var(--nav-antique-gold);
+}
+
+/* --------------------------------------------------------------------------
+   Services Mega-Dropdown Menu
+   -------------------------------------------------------------------------- */
+.services-dropdown-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.services-mega-menu {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #FFFDF8;
+  border: 1.5px solid var(--nav-antique-gold);
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 16px 40px rgba(92, 64, 51, 0.16), 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  z-index: 1020;
+  min-width: 680px;
+  animation: dropdownReveal 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Pointer Caret / Upward Arrow */
+.services-mega-caret {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 9px solid var(--nav-antique-gold);
+}
+
+.services-mega-caret::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #FFFDF8;
+}
+
+/* Individual Service Card in Dropdown */
+.service-card-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 12px 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 110px;
+}
+
+.service-card-item:hover {
+  background: rgba(182, 138, 76, 0.12);
+  border-color: rgba(182, 138, 76, 0.35);
+  transform: translateY(-2px);
+}
+
+.service-card-icon-wrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--nav-primary-burgundy);
+  margin-bottom: 8px;
+  transition: transform 0.2s ease;
+}
+
+.service-card-item:hover .service-card-icon-wrap {
+  transform: scale(1.1);
+  color: var(--nav-antique-gold);
+}
+
+.service-card-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--nav-ink-charcoal);
+  margin-bottom: 3px;
+  line-height: 1.2;
+}
+
+.service-card-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  color: #726A5F;
+  line-height: 1.2;
+}
+
+@keyframes dropdownReveal {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Right Section: Actions (Notifications, My Library, Admin Portal, Profile)
+   -------------------------------------------------------------------------- */
+.heritage-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+/* Notification Bell Circle Button */
+.heritage-notif-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #FFFDF9;
+  border: 1.5px solid var(--nav-parchment);
+  color: var(--nav-ink-charcoal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.heritage-notif-btn:hover {
+  background: #FFFFFF;
+  border-color: var(--nav-antique-gold);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.heritage-notif-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  background: #D94638;
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 800;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* My Library Pill Button */
+.heritage-library-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--nav-cream-bg);
+  border: 1.5px solid var(--nav-antique-gold);
+  color: var(--nav-ink-charcoal);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.825rem;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
+}
+
+.heritage-library-btn:hover,
+.heritage-library-btn.active {
+  background: #FFFFFF;
+  border-color: var(--nav-primary-burgundy);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(182, 138, 76, 0.25);
+}
+
+.library-count-badge {
+  background: var(--nav-primary-burgundy);
+  color: #FFFDF8;
+  font-size: 0.68rem;
+  font-weight: 800;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 2px;
+}
+
+/* Admin Portal Pill Button (Premium Burgundy + Subtle Gold Detailing) */
+.heritage-admin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--nav-primary-burgundy);
+  border: 1.5px solid var(--nav-antique-gold);
+  color: #FFFDF8;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.825rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(107, 30, 43, 0.25);
+  white-space: nowrap;
+}
+
+.heritage-admin-btn:hover,
+.heritage-admin-btn.active {
+  background: #56212C;
+  border-color: #CFA66E;
+  color: #FFFFFF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(92, 64, 51, 0.35);
+}
+
+.admin-shield-icon {
+  color: var(--nav-antique-gold);
+}
+
+/* User Account Profile Pill */
+.heritage-account-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFFDF9;
+  border: 1.5px solid var(--nav-parchment);
+  color: var(--nav-ink-charcoal);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.825rem;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
+}
+
+.heritage-account-btn:hover {
+  background: #FFFFFF;
+  border-color: var(--nav-antique-gold);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.account-avatar-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(107, 30, 43, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--nav-primary-burgundy);
+  position: relative;
+}
+
+.account-online-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22C55E;
+  border: 1.5px solid #FFFFFF;
+  display: inline-block;
+  margin-right: 2px;
+}
+
+.account-label-text {
+  font-weight: 600;
+  color: var(--nav-ink-charcoal);
+}
+
+.account-chevron {
+  opacity: 0.6;
+}
+
+/* Mobile Hamburger Toggle */
+.heritage-mobile-toggle {
+  display: none;
+  background: transparent;
+  border: 1.5px solid var(--nav-parchment);
+  color: var(--nav-ink-charcoal);
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.heritage-mobile-toggle:hover {
+  background: rgba(184, 149, 85, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   Mobile Navigation Drawer (Heritage Responsive Menu)
+   -------------------------------------------------------------------------- */
+.heritage-mobile-drawer {
+  background: var(--nav-warm-ivory);
+  border-top: 1.5px solid var(--nav-antique-gold);
+  padding: 16px 20px 24px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+  animation: fadeInDown 0.2s ease-out;
+}
+
+.heritage-mobile-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.heritage-mobile-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--nav-cream-bg);
+  border: 1px solid var(--nav-parchment);
+  border-radius: 8px;
+  color: var(--nav-ink-charcoal);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.heritage-mobile-link:hover,
+.heritage-mobile-link.active {
+  background: var(--nav-primary-burgundy);
+  color: #FFFDF8;
+  border-color: var(--nav-primary-burgundy);
+}
+
+.heritage-mobile-link.active .nav-item-icon {
+  color: #FFFDF8;
+}
+
+.heritage-mobile-subservices {
+  padding: 8px 10px;
+  background: rgba(182, 138, 76, 0.08);
+  border-radius: 8px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mobile-subservice-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--nav-deep-forest);
+  cursor: pointer;
+  text-align: left;
+  border-radius: 6px;
+}
+
+.mobile-subservice-btn:hover {
+  background: #FFFFFF;
+}
+
+.heritage-mobile-footer {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--nav-parchment);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+@media (max-width: 1220px) {
+  .heritage-nav-menu {
+    gap: 6px;
+  }
+  .heritage-nav-item {
+    min-width: 50px;
+    padding: 4px 6px;
+  }
+  .nav-item-label {
+    font-size: 0.72rem;
+  }
+  .heritage-brand-title {
+    font-size: 1.25rem;
+  }
+  .heritage-header-container {
+    height: 72px;
+  }
+  .services-mega-menu {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 1040px) {
+  .heritage-nav-menu {
+    display: none;
+  }
+  .heritage-mobile-toggle {
+    display: flex;
+  }
+  .nav-watermark-left {
+    display: none;
+  }
+  .heritage-topbar-center {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .heritage-admin-btn {
+    display: none;
+  }
+  .heritage-library-btn span:not(.library-count-badge) {
+    display: none;
+  }
+  .heritage-account-btn .account-label-text,
+  .heritage-account-btn .account-chevron {
+    display: none;
+  }
+  .heritage-brand-subtitle {
+    display: none;
+  }
+}

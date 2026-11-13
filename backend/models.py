@@ -16,6 +16,7 @@ class User(Base):
     role = Column(String(50), default="user", nullable=False)  # "user" | "librarian"
     phone = Column(String(50), nullable=True)
     member_card_no = Column(String(50), unique=True, index=True, nullable=False)
+    is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     borrowing_records = relationship("BorrowingRecord", back_populates="user", cascade="all, delete-orphan")
@@ -176,5 +177,7 @@ class Library(Base):
     latitude = Column(String(50), nullable=True)
     longitude = Column(String(50), nullable=True)
     map_search_query = Column(String(255), nullable=True)
+    description = Column(Text, nullable=True)
+    is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
